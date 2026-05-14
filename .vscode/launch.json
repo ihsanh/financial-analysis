@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-FinancialAnalysisApplication<financial-analysis>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.finanalysis.FinancialAnalysisApplication",
+            "projectName": "financial-analysis",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

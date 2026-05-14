@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn compile *)",
+      "PowerShell(winget --version 2>&1)",
+      "PowerShell(choco --version 2>&1)",
+      "PowerShell(winget install Microsoft.OpenJDK.21 --accept-package-agreements --accept-source-agreements 2>&1)",
+      "PowerShell(winget install Apache.Maven --accept-package-agreements --accept-source-agreements 2>&1)"
+    ]
+  }
+}
