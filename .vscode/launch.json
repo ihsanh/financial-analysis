@@ -2,13 +2,23 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Spring Boot-FinancialAnalysisApplication<financial-analysis>",
+            "name": "FinAnalysis (H2 - geliştirme)",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "mainClass": "com.finanalysis.FinancialAnalysisApplication",
             "projectName": "financial-analysis",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "args": "--spring.profiles.active=h2",
+            "vmArgs": "-Dfile.encoding=UTF-8"
+        },
+        {
+            "type": "java",
+            "name": "FinAnalysis (PostgreSQL - üretim)",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.finanalysis.FinancialAnalysisApplication",
+            "projectName": "financial-analysis",
+            "args": "--spring.profiles.active=postgres",
+            "vmArgs": "-Dfile.encoding=UTF-8"
         }
     ]
 }

@@ -28,7 +28,7 @@ public class FinancialLineItem {
     private String name;
 
     // Primary value (for BS and IS)
-    @Column(precision = 20, scale = 2)
+    @Column(name = "item_value", precision = 20, scale = 2)
     private BigDecimal value;
 
     // Trial balance specific
