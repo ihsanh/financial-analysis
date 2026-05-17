@@ -42,6 +42,16 @@ public class StatementController {
         return statementService.upload(companyId, period, type, file);
     }
 
+    /** Reads all period columns from the Excel header row and creates/updates one statement per period. */
+    @PostMapping("/upload-multi")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<FinancialStatementDto> uploadMulti(
+            @RequestParam Long companyId,
+            @RequestParam StatementType type,
+            @RequestParam MultipartFile file) {
+        return statementService.uploadMulti(companyId, type, file);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

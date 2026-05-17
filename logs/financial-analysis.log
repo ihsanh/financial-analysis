@@ -1,280 +1,205 @@
-2026-05-14 23:05:50 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 12552 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-14 23:05:50 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-14 23:05:51 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-14 23:05:51 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 31 ms. Found 5 JPA repository interfaces.
-2026-05-14 23:05:52 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-14 23:05:52 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-14 23:05:52 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-14 23:05:52 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-14 23:05:52 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1394 ms
-2026-05-14 23:05:52 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-14 23:05:52 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-14 23:05:52 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-14 23:05:52 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-14 23:05:53 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-14 23:05:53 WARN  [main] org.hibernate.dialect.Dialect - HHH000511: The 2.2.0 version for [org.hibernate.dialect.PostgreSQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 12.0.0. Check the community dialects project for available legacy versions.
-2026-05-14 23:05:53 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-14 23:05:53 WARN  [main] o.h.t.schema.internal.ExceptionHandlerLoggedImpl - GenerationTarget encountered exception accepting command : Error executing DDL "
-    create table financial_line_items (
-        id bigserial not null,
-        code varchar(255) not null,
-        credit_value numeric(20,2),
-        debit_value numeric(20,2),
-        item_level integer,
-        name varchar(255) not null,
-        parent_code varchar(255),
-        sort_order integer,
-        value numeric(20,2),
-        statement_id bigint not null,
-        primary key (id)
-    )" via JDBC [Syntax error in SQL statement "\000d\000a    create table financial_line_items (\000d\000a        id bigserial not null,\000d\000a        code varchar(255) not null,\000d\000a        credit_value numeric(20,2),\000d\000a        debit_value numeric(20,2),\000d\000a        item_level integer,\000d\000a        name varchar(255) not null,\000d\000a        parent_code varchar(255),\000d\000a        sort_order integer,\000d\000a        [*]value numeric(20,2),\000d\000a        statement_id bigint not null,\000d\000a        primary key (id)\000d\000a    )"; expected "identifier";]
-org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
-    create table financial_line_items (
-        id bigserial not null,
-        code varchar(255) not null,
-        credit_value numeric(20,2),
-        debit_value numeric(20,2),
-        item_level integer,
-        name varchar(255) not null,
-        parent_code varchar(255),
-        sort_order integer,
-        value numeric(20,2),
-        statement_id bigint not null,
-        primary key (id)
-    )" via JDBC [Syntax error in SQL statement "\000d\000a    create table financial_line_items (\000d\000a        id bigserial not null,\000d\000a        code varchar(255) not null,\000d\000a        credit_value numeric(20,2),\000d\000a        debit_value numeric(20,2),\000d\000a        item_level integer,\000d\000a        name varchar(255) not null,\000d\000a        parent_code varchar(255),\000d\000a        sort_order integer,\000d\000a        [*]value numeric(20,2),\000d\000a        statement_id bigint not null,\000d\000a        primary key (id)\000d\000a    )"; expected "identifier";]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:574)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:514)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.createTable(AbstractSchemaMigrator.java:315)
-	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:80)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:232)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:117)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:286)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:145)
-	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:142)
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:315)
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:450)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1507)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:388)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:364)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1833)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1782)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1231)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:949)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:334)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343)
-	at com.finanalysis.FinancialAnalysisApplication.main(FinancialAnalysisApplication.java:9)
-Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "\000d\000a    create table financial_line_items (\000d\000a        id bigserial not null,\000d\000a        code varchar(255) not null,\000d\000a        credit_value numeric(20,2),\000d\000a        debit_value numeric(20,2),\000d\000a        item_level integer,\000d\000a        name varchar(255) not null,\000d\000a        parent_code varchar(255),\000d\000a        sort_order integer,\000d\000a        [*]value numeric(20,2),\000d\000a        statement_id bigint not null,\000d\000a        primary key (id)\000d\000a    )"; expected "identifier"; SQL statement:
-
-    create table financial_line_items (
-        id bigserial not null,
-        code varchar(255) not null,
-        credit_value numeric(20,2),
-        debit_value numeric(20,2),
-        item_level integer,
-        name varchar(255) not null,
-        parent_code varchar(255),
-        sort_order integer,
-        value numeric(20,2),
-        statement_id bigint not null,
-        primary key (id)
-    ) [42001-224]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.getSyntaxError(DbException.java:261)
-	at org.h2.command.Parser.readIdentifier(Parser.java:5533)
-	at org.h2.command.Parser.parseTableColumnDefinition(Parser.java:8994)
-	at org.h2.command.Parser.parseCreateTable(Parser.java:8939)
-	at org.h2.command.Parser.parseCreate(Parser.java:6404)
-	at org.h2.command.Parser.parsePrepared(Parser.java:666)
-	at org.h2.command.Parser.parse(Parser.java:592)
-	at org.h2.command.Parser.parse(Parser.java:564)
-	at org.h2.command.Parser.prepareCommand(Parser.java:483)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:639)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:559)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1166)
-	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:245)
-	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:231)
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
-	... 38 common frames omitted
-2026-05-14 23:05:53 WARN  [main] o.h.t.schema.internal.ExceptionHandlerLoggedImpl - GenerationTarget encountered exception accepting command : Error executing DDL "
-    create index idx_line_item_statement 
-       on financial_line_items (statement_id)" via JDBC [Table "FINANCIAL_LINE_ITEMS" not found;]
-org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
-    create index idx_line_item_statement 
-       on financial_line_items (statement_id)" via JDBC [Table "FINANCIAL_LINE_ITEMS" not found;]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:574)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:514)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applyIndexes(AbstractSchemaMigrator.java:360)
-	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:96)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:232)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:117)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:286)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:145)
-	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:142)
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:315)
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:450)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1507)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:388)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:364)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1833)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1782)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1231)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:949)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:334)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343)
-	at com.finanalysis.FinancialAnalysisApplication.main(FinancialAnalysisApplication.java:9)
-Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FINANCIAL_LINE_ITEMS" not found; SQL statement:
-
-    create index idx_line_item_statement 
-       on financial_line_items (stateme [42102-224]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.command.ddl.CreateIndex.update(CreateIndex.java:70)
-	at org.h2.command.CommandContainer.update(CommandContainer.java:169)
-	at org.h2.command.Command.executeUpdate(Command.java:256)
-	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:262)
-	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:231)
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
-	... 38 common frames omitted
-2026-05-14 23:05:53 WARN  [main] o.h.t.schema.internal.ExceptionHandlerLoggedImpl - GenerationTarget encountered exception accepting command : Error executing DDL "
-    create index idx_line_item_code 
-       on financial_line_items (code)" via JDBC [Table "FINANCIAL_LINE_ITEMS" not found;]
-org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
-    create index idx_line_item_code 
-       on financial_line_items (code)" via JDBC [Table "FINANCIAL_LINE_ITEMS" not found;]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:574)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:514)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applyIndexes(AbstractSchemaMigrator.java:360)
-	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:96)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:232)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:117)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:286)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:145)
-	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:142)
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:315)
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:450)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1507)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:388)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:364)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1833)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1782)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1231)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:949)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:334)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343)
-	at com.finanalysis.FinancialAnalysisApplication.main(FinancialAnalysisApplication.java:9)
-Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FINANCIAL_LINE_ITEMS" not found; SQL statement:
-
-    create index idx_line_item_code 
-       on financial_line_items  [42102-224]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.command.ddl.CreateIndex.update(CreateIndex.java:70)
-	at org.h2.command.CommandContainer.update(CommandContainer.java:169)
-	at org.h2.command.Command.executeUpdate(Command.java:256)
-	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:262)
-	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:231)
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
-	... 38 common frames omitted
-2026-05-14 23:05:53 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-14 23:05:54 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-14 23:05:54 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-14 23:05:54 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-14 23:05:55 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-14 23:05:55 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-14 23:05:55 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 5.001 seconds (process running for 5.393)
-2026-05-14 23:05:55 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-14 23:05:55 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-14 23:05:56 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-14 23:08:08 INFO  [SpringApplicationShutdownHook] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-05-14 23:08:08 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-05-14 23:08:08 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-2026-05-14 23:08:41 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 28160 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-14 23:08:41 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-14 23:08:42 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-14 23:08:42 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 33 ms. Found 5 JPA repository interfaces.
-2026-05-14 23:08:43 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-14 23:08:43 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-14 23:08:43 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-14 23:08:43 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-14 23:08:43 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1427 ms
-2026-05-14 23:08:43 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-14 23:08:43 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-14 23:08:43 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-14 23:08:43 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-14 23:08:44 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-14 23:08:44 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-14 23:08:44 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-14 23:08:45 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-14 23:08:45 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-14 23:08:45 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-14 23:08:46 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-14 23:08:46 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-14 23:08:46 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 5.046 seconds (process running for 5.435)
-2026-05-14 23:08:46 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-14 23:08:46 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-14 23:08:47 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-17 13:55:29 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 4720 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-17 13:55:29 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-17 13:55:30 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-17 13:55:30 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 30 ms. Found 5 JPA repository interfaces.
+2026-05-17 13:55:31 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-17 13:55:31 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-17 13:55:31 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-17 13:55:31 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-17 13:55:31 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1326 ms
+2026-05-17 13:55:31 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-17 13:55:31 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-17 13:55:31 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-17 13:55:31 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-17 13:55:31 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-17 13:55:31 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-17 13:55:32 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 13:55:32 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-17 13:55:33 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-17 13:55:33 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-17 13:55:33 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-17 13:55:33 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-17 13:55:34 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.687 seconds (process running for 5.134)
+2026-05-17 13:55:34 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-17 13:55:34 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-17 13:55:35 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-17 14:04:12 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 9492 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-17 14:04:12 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-17 14:04:13 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-17 14:04:13 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 5 JPA repository interfaces.
+2026-05-17 14:04:13 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-17 14:04:13 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-17 14:04:13 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-17 14:04:13 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-17 14:04:13 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1179 ms
+2026-05-17 14:04:14 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-17 14:04:14 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-17 14:04:14 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-17 14:04:14 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-17 14:04:14 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-17 14:04:14 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-17 14:04:15 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 14:04:15 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-17 14:04:15 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-17 14:04:15 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-17 14:04:16 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-17 14:04:16 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-17 14:04:16 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.15 seconds (process running for 4.476)
+2026-05-17 14:04:16 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-17 14:04:16 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-17 14:04:18 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-17 14:05:04 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 4068 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-17 14:05:04 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-17 14:05:05 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-17 14:05:05 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 5 JPA repository interfaces.
+2026-05-17 14:05:05 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-17 14:05:05 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-17 14:05:05 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-17 14:05:05 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-17 14:05:05 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1218 ms
+2026-05-17 14:05:05 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-17 14:05:06 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-17 14:05:06 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-17 14:05:06 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-17 14:05:06 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-17 14:05:06 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-17 14:05:07 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 14:05:07 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-17 14:05:07 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-17 14:05:07 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-17 14:05:08 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-17 14:05:08 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-17 14:05:08 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.139 seconds (process running for 4.459)
+2026-05-17 14:05:08 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-17 14:05:08 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-17 14:05:10 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-17 14:15:57 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 24080 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-17 14:15:57 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-17 14:15:58 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-17 14:15:58 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 29 ms. Found 5 JPA repository interfaces.
+2026-05-17 14:15:59 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-17 14:15:59 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-17 14:15:59 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-17 14:15:59 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-17 14:15:59 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1304 ms
+2026-05-17 14:15:59 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-17 14:15:59 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-17 14:15:59 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-17 14:15:59 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-17 14:15:59 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-17 14:15:59 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-17 14:16:00 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 14:16:00 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-17 14:16:01 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-17 14:16:01 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-17 14:16:01 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-17 14:16:01 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-17 14:16:01 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.14 seconds (process running for 4.464)
+2026-05-17 14:16:01 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-17 14:16:01 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-17 14:16:04 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-17 14:27:47 WARN  [http-nio-8080-exec-3] o.s.w.s.m.support.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-05-17 14:28:59 WARN  [http-nio-8080-exec-6] o.s.w.s.m.support.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-05-17 14:29:38 INFO  [SpringApplicationShutdownHook] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 14:29:38 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-05-17 14:29:38 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-05-17 14:29:44 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 26064 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-17 14:29:44 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-17 14:29:45 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-17 14:29:45 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 26 ms. Found 5 JPA repository interfaces.
+2026-05-17 14:29:45 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-17 14:29:45 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-17 14:29:45 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-17 14:29:45 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-17 14:29:45 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1206 ms
+2026-05-17 14:29:45 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-17 14:29:45 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-17 14:29:45 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-17 14:29:45 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-17 14:29:46 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-17 14:29:46 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-17 14:29:46 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 14:29:47 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-17 14:29:47 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-17 14:29:47 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-17 14:29:48 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-17 14:29:48 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-17 14:29:48 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.078 seconds (process running for 4.42)
+2026-05-17 14:29:48 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-17 14:29:48 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-17 14:29:50 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-17 14:40:05 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 23336 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-17 14:40:05 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-17 14:40:06 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-17 14:40:06 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 29 ms. Found 5 JPA repository interfaces.
+2026-05-17 14:40:06 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-17 14:40:06 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-17 14:40:06 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-17 14:40:06 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-17 14:40:06 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1271 ms
+2026-05-17 14:40:07 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-17 14:40:07 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-17 14:40:07 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-17 14:40:07 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-17 14:40:07 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-17 14:40:07 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-17 14:40:08 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 14:40:08 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-17 14:40:09 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-17 14:40:09 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-17 14:40:09 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-17 14:40:09 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-17 14:40:09 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.397 seconds (process running for 4.727)
+2026-05-17 14:40:09 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-17 14:40:09 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-17 14:40:11 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-17 14:44:49 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 7692 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-17 14:44:49 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-17 14:44:50 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-17 14:44:50 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 5 JPA repository interfaces.
+2026-05-17 14:44:50 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-17 14:44:50 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-17 14:44:50 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-17 14:44:51 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-17 14:44:51 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1224 ms
+2026-05-17 14:44:51 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-17 14:44:51 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-17 14:44:51 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-17 14:44:51 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-17 14:44:51 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-17 14:44:51 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-17 14:44:52 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 14:44:52 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-17 14:44:53 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-17 14:44:53 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-17 14:44:53 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-17 14:44:54 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-17 14:44:54 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.584 seconds (process running for 4.919)
+2026-05-17 14:44:54 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-17 14:44:54 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-17 14:44:55 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-17 14:50:47 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 27080 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-17 14:50:47 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-17 14:50:47 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-17 14:50:47 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 5 JPA repository interfaces.
+2026-05-17 14:50:48 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-17 14:50:48 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-17 14:50:48 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-17 14:50:48 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-17 14:50:48 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1203 ms
+2026-05-17 14:50:48 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-17 14:50:48 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-17 14:50:48 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-17 14:50:48 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-17 14:50:49 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-17 14:50:49 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-17 14:50:49 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-17 14:50:50 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-17 14:50:50 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-17 14:50:50 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-17 14:50:51 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-17 14:50:51 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-17 14:50:51 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.471 seconds (process running for 4.801)
+2026-05-17 14:50:51 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-17 14:50:51 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-17 14:50:53 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'

@@ -6,6 +6,7 @@ import com.finanalysis.model.FinancialLineItem;
 import com.finanalysis.model.FinancialStatement;
 import com.finanalysis.model.StatementType;
 import com.finanalysis.parser.ExcelStatementParser;
+import com.finanalysis.parser.ExcelStatementParser.ParsedPeriod;
 import com.finanalysis.repository.CompanyRepository;
 import com.finanalysis.repository.FinancialStatementRepository;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,41 @@ public class StatementService {
         }
 
         return toDto(statementRepository.save(statement), true);
+    }
+
+    /** Reads all period columns from the Excel and creates/updates one statement per period. */
+    @Transactional
+    public List<FinancialStatementDto> uploadMulti(Long companyId, StatementType type, MultipartFile file) {
+        var company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found: " + companyId));
+
+        List<ParsedPeriod> periods;
+        try {
+            periods = excelParser.parseMultiPeriod(file.getInputStream(), type);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse file: " + e.getMessage(), e);
+        }
+        if (periods.isEmpty()) throw new IllegalArgumentException("Excel'de dönem sütunu bulunamadı (YYYY/M formatında başlık gerekli)");
+
+        return periods.stream().map(parsed -> {
+            // Replace existing statement for same company+period+type
+            statementRepository.findByCompanyIdAndPeriodAndType(companyId, parsed.period(), type)
+                    .ifPresent(statementRepository::delete);
+
+            FinancialStatement statement = FinancialStatement.builder()
+                    .company(company)
+                    .type(type)
+                    .period(parsed.period())
+                    .fileName(file.getOriginalFilename())
+                    .fileType(file.getContentType())
+                    .build();
+
+            List<FinancialLineItem> items = parsed.items().stream()
+                    .map(raw -> excelParser.toEntity(raw, statement))
+                    .toList();
+            statement.getLineItems().addAll(items);
+            return toDto(statementRepository.save(statement), false);
+        }).toList();
     }
 
     @Transactional

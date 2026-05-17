@@ -5,7 +5,11 @@
       "PowerShell(winget --version 2>&1)",
       "PowerShell(choco --version 2>&1)",
       "PowerShell(winget install Microsoft.OpenJDK.21 --accept-package-agreements --accept-source-agreements 2>&1)",
-      "PowerShell(winget install Apache.Maven --accept-package-agreements --accept-source-agreements 2>&1)"
+      "PowerShell(winget install Apache.Maven --accept-package-agreements --accept-source-agreements 2>&1)",
+      "Bash(npm --version)",
+      "PowerShell(npm --version)",
+      "PowerShell(node --version)",
+      "PowerShell(winget install OpenJS.NodeJS.LTS --accept-source-agreements --accept-package-agreements)"
     ]
   }
 }

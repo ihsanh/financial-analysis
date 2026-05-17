@@ -35,6 +35,13 @@ export const uploadStatement = (companyId: number, period: string, type: Stateme
   form.append('file', file)
   return api.post<FinancialStatement>('/statements/upload', form).then(r => r.data)
 }
+export const uploadStatementMulti = (companyId: number, type: StatementType, file: File) => {
+  const form = new FormData()
+  form.append('companyId', String(companyId))
+  form.append('type', type)
+  form.append('file', file)
+  return api.post<FinancialStatement[]>('/statements/upload-multi', form).then(r => r.data)
+}
 export const deleteStatement = (id: number) => api.delete(`/statements/${id}`)
 
 // Ratio Rules
