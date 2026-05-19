@@ -9,9 +9,50 @@ import {
   getCompanies, getRatioRules, getAdjustmentRules, runAnalysis,
   getStatements, getStatement, getItemDefs
 } from '../api/client'
-import type { Company, RatioRule, AdjustmentRule, FinancialStatement, FinancialItemDef, StatementType } from '../types'
+import type { Company, RatioRule, AdjustmentRule, FinancialStatement, FinancialItemDef, FinancialLineItem, StatementType } from '../types'
 
 const { Title, Text } = Typography
+
+// ── Summary panel config ─────────────────────────────────────────────────────
+const INCOME_CONFIGS = [
+  { label: 'Satışlar',                         patterns: ['net satışlar', 'satışlar', 'hasılat', 'net hasılat'] },
+  { label: 'Brüt Kar',                         patterns: ['brüt kar', 'brüt kazanç'] },
+  { label: 'Esas Faaliyet Karı',               patterns: ['esas faaliyet kar', 'faaliyet kar'] },
+  { label: 'FAVÖK',                            patterns: ['favök', 'ebitda'] },
+  { label: 'Net Parasal Poz. Kaz. (Kay.)',     patterns: ['net parasal pozisyon', 'parasal pozisyon kazanç'] },
+  { label: 'Net Dönem Karı',                   patterns: ['net dönem kar', 'dönem net kar', 'net kar'] },
+]
+const BALANCE_CONFIGS = [
+  { label: 'Dönen Varlıklar',   patterns: ['toplam dönen varlık', 'dönen varlık'] },
+  { label: 'Duran Varlıklar',   patterns: ['toplam duran varlık', 'duran varlık'] },
+  { label: 'Toplam Varlıklar',  patterns: ['toplam varlık', 'aktif toplam', 'varlıklar toplamı'] },
+  { label: 'Finansal Borçlar',  patterns: ['toplam finansal borç', 'finansal borç'] },
+  { label: 'Net Borç',          patterns: ['net borç'] },
+  { label: 'Özkaynaklar',       patterns: ['toplam özkaynaklar', 'özkaynaklar', 'özkaynak toplamı'] },
+]
+
+function findByPatterns(items: FinancialLineItem[], patterns: string[]): number | null {
+  const norm = (s: string) => s.toLowerCase().trim()
+  for (const minLevel of [1, 0]) {
+    const pool = items.filter(i => (i.level ?? 0) >= minLevel)
+    for (const p of patterns) {
+      const hit = pool.find(i => norm(i.name) === norm(p))
+      if (hit) return hit.value ?? null
+    }
+    for (const p of patterns) {
+      const hits = pool.filter(i => norm(i.name).startsWith(norm(p))).sort((a, b) => a.name.length - b.name.length)
+      if (hits.length) return hits[0].value ?? null
+    }
+    for (const p of patterns) {
+      const hits = pool.filter(i => norm(i.name).includes(norm(p))).sort((a, b) => a.name.length - b.name.length)
+      if (hits.length) return hits[0].value ?? null
+    }
+  }
+  return null
+}
+
+const fmtSummary = (v: number | null | undefined) =>
+  v != null ? v.toLocaleString('tr-TR', { maximumFractionDigits: 0 }) : '-'
 
 const STATEMENT_LABELS: Record<StatementType, string> = {
   BALANCE_SHEET: 'Bilanço',
@@ -32,6 +73,13 @@ interface MultiRow {
   level: number
   periodValues: Record<string, number | null>
   adjustedPeriods: Record<string, boolean>
+}
+
+interface SummaryRow {
+  key: string
+  label: string
+  val1: number | null
+  val2: number | null
 }
 
 interface MultiRatioRow {
@@ -70,14 +118,29 @@ export default function AnalysisPage() {
   const [ratioLoading, setRatioLoading] = useState(false)
   const [ratioError, setRatioError] = useState<string | null>(null)
 
+  // ── summary view ─────────────────────────────────────────────────
+  const [summaryPeriod1, setSummaryPeriod1] = useState<string | null>(null)
+  const [summaryPeriod2, setSummaryPeriod2] = useState<string | null>(null)
+  const [summaryLoading, setSummaryLoading] = useState(false)
+  const [incomeRows, setIncomeRows] = useState<SummaryRow[]>([])
+  const [balanceRows, setBalanceRows] = useState<SummaryRow[]>([])
+
+  const parsePeriod = (p: string) => { const [y, m] = p.split('/').map(Number); return y * 100 + m }
+  const periodSort = (a: string, b: string) => parsePeriod(b) - parsePeriod(a)
+
   useEffect(() => {
     Promise.all([getCompanies(), getRatioRules(true), getAdjustmentRules(true), getItemDefs()])
       .then(([c, r, a, defs]) => { setCompanies(c); setRatioRules(r); setAdjRules(a); setItemDefs(defs) })
       .catch(() => {})
   }, [])
 
-  const parsePeriod = (p: string) => { const [y, m] = p.split('/').map(Number); return y * 100 + m }
-  const periodSort = (a: string, b: string) => parsePeriod(b) - parsePeriod(a)
+  useEffect(() => {
+    if (!selectedCompany) return
+    const periods = [...new Set(allStatements.map(s => s.period))].sort(periodSort)
+    setSummaryPeriod1(periods[0] ?? null)
+    setSummaryPeriod2(periods[1] ?? null)
+    setIncomeRows([]); setBalanceRows([])
+  }, [allStatements])
 
   const codeToName = useMemo(
     () => new Map(itemDefs.map(d => [d.code, d.name])),
@@ -186,6 +249,46 @@ export default function AnalysisPage() {
       setStmtActivePeriods(sortedPeriods)
     } catch (e: unknown) { message.error(String(e)) }
     finally { setViewLoading(false) }
+  }
+
+  const handleSummaryLoad = async () => {
+    if (!selectedCompany || !summaryPeriod1) return
+    setSummaryLoading(true)
+    try {
+      const periods = [summaryPeriod1, summaryPeriod2].filter(Boolean) as string[]
+      const bsStmts = allStatements.filter(s => s.type === 'BALANCE_SHEET' && periods.includes(s.period))
+      const isStmts = allStatements.filter(s => s.type === 'INCOME_STATEMENT' && periods.includes(s.period))
+      const [bsFetched, isFetched] = await Promise.all([
+        Promise.all(bsStmts.map(s => getStatement(s.id))),
+        Promise.all(isStmts.map(s => getStatement(s.id))),
+      ])
+      const bsMap = new Map(bsFetched.map(s => [s.period, s.lineItems]))
+      const isMap = new Map(isFetched.map(s => [s.period, s.lineItems]))
+
+      const buildRows = (configs: typeof INCOME_CONFIGS, stmtMap: Map<string, FinancialLineItem[]>): SummaryRow[] =>
+        configs.map((cfg, i) => ({
+          key: String(i), label: cfg.label,
+          val1: findByPatterns(stmtMap.get(summaryPeriod1) ?? [], cfg.patterns),
+          val2: summaryPeriod2 ? findByPatterns(stmtMap.get(summaryPeriod2) ?? [], cfg.patterns) : null,
+        }))
+
+      const bsBuilt = buildRows(BALANCE_CONFIGS, bsMap)
+      // Calculate Net Borç if not found as a direct line item
+      const netDebtRow = bsBuilt.find(r => r.label === 'Net Borç')
+      if (netDebtRow) {
+        const calcNetDebt = (items: FinancialLineItem[]) => {
+          const debt = findByPatterns(items, ['toplam finansal borç', 'finansal borç'])
+          const cash = findByPatterns(items, ['nakit ve nakit benzerleri', 'nakit', 'hazır değerler'])
+          return debt != null ? (cash != null ? debt - cash : debt) : null
+        }
+        if (netDebtRow.val1 == null) netDebtRow.val1 = calcNetDebt(bsMap.get(summaryPeriod1) ?? [])
+        if (netDebtRow.val2 == null && summaryPeriod2) netDebtRow.val2 = calcNetDebt(bsMap.get(summaryPeriod2) ?? [])
+      }
+
+      setIncomeRows(buildRows(INCOME_CONFIGS, isMap))
+      setBalanceRows(bsBuilt)
+    } catch (e: unknown) { message.error(String(e)) }
+    finally { setSummaryLoading(false) }
   }
 
   const stmtColumns: ColumnsType<MultiRow> = [
@@ -413,6 +516,91 @@ export default function AnalysisPage() {
     </Card>
   )
 
+  const summaryPctCell = (val1: number | null, val2: number | null) => {
+    if (val1 == null || val2 == null || val2 === 0) return <span style={{ color: '#8c8c8c' }}>-</span>
+    const pct = ((val1 - val2) / Math.abs(val2)) * 100
+    const color = pct >= 0 ? '#52c41a' : '#ff4d4f'
+    return <b style={{ color }}>% {pct >= 0 ? '+' : ''}{pct.toFixed(0)}</b>
+  }
+
+  const summaryColDef = (p1: string, p2: string | null): ColumnsType<SummaryRow> => [
+    {
+      title: 'Kalem', dataIndex: 'label', key: 'label', width: 200,
+      render: (v: string) => <span style={{ fontWeight: 500 }}>{v}</span>,
+    },
+    {
+      title: p1, key: 'val1', align: 'right', width: 110,
+      render: (_: unknown, r: SummaryRow) => (
+        <span style={{ fontFamily: 'monospace', color: r.val1 == null ? '#bfbfbf' : undefined }}>
+          {fmtSummary(r.val1)}
+        </span>
+      ),
+    },
+    ...(p2 ? [
+      {
+        title: p2, key: 'val2', align: 'right' as const, width: 110,
+        render: (_: unknown, r: SummaryRow) => (
+          <span style={{ fontFamily: 'monospace', color: r.val2 == null ? '#bfbfbf' : undefined }}>
+            {fmtSummary(r.val2)}
+          </span>
+        ),
+      },
+      {
+        title: '%', key: 'pct', align: 'right' as const, width: 72,
+        render: (_: unknown, r: SummaryRow) => summaryPctCell(r.val1, r.val2),
+      },
+    ] : []),
+  ]
+
+  const summaryTab = (
+    <Card size="small">
+      <Space wrap style={{ marginBottom: 16 }}>
+        <Select
+          style={{ width: 140 }} placeholder="Dönem 1"
+          options={ratioPeriodOptions.map(p => ({ value: p, label: p }))}
+          value={summaryPeriod1} onChange={setSummaryPeriod1}
+          disabled={!selectedCompany}
+        />
+        <Select
+          style={{ width: 160 }} placeholder="Karşılaştırma dönemi"
+          options={ratioPeriodOptions.map(p => ({ value: p, label: p }))}
+          value={summaryPeriod2} onChange={v => setSummaryPeriod2(v ?? null)}
+          allowClear disabled={!selectedCompany}
+        />
+        <Button type="primary" icon={<EyeOutlined />} loading={summaryLoading}
+          disabled={!selectedCompany || !summaryPeriod1}
+          onClick={handleSummaryLoad}>
+          Getir
+        </Button>
+      </Space>
+
+      {(incomeRows.length > 0 || balanceRows.length > 0) && (
+        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+          <div style={{ flex: 1, minWidth: 340 }}>
+            <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8, color: '#262626' }}>
+              Özet Gelir Tablosu
+            </div>
+            <Table<SummaryRow>
+              rowKey="key" size="small"
+              columns={summaryColDef(summaryPeriod1!, summaryPeriod2)}
+              dataSource={incomeRows} pagination={false}
+            />
+          </div>
+          <div style={{ flex: 1, minWidth: 340 }}>
+            <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8, color: '#262626' }}>
+              Özet Bilanço
+            </div>
+            <Table<SummaryRow>
+              rowKey="key" size="small"
+              columns={summaryColDef(summaryPeriod1!, summaryPeriod2)}
+              dataSource={balanceRows} pagination={false}
+            />
+          </div>
+        </div>
+      )}
+    </Card>
+  )
+
   return (
     <>
       <Title level={4} style={{ marginTop: 0 }}>Analiz</Title>
@@ -428,6 +616,7 @@ export default function AnalysisPage() {
       </div>
 
       <Tabs items={[
+        { key: 'summary', label: 'Özet Finansallar', children: summaryTab },
         { key: 'statements', label: 'Finansal Tablo Görünümü', children: stmtTab },
         { key: 'ratios', label: 'Rasyo Analizi', children: ratioTab },
       ]} />
