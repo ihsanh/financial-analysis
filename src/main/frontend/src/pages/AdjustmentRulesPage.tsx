@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import {
   Table, Button, Modal, Form, Input, Select, Space, Popconfirm,
-  message, Typography, Switch, Divider, InputNumber
+  message, Typography, Switch, Divider, InputNumber, Tag
 } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import {
   getAdjustmentRules, createAdjustmentRule, updateAdjustmentRule,
-  toggleAdjustmentRule, deleteAdjustmentRule, getItemDefs
+  toggleAdjustmentRule, deleteAdjustmentRule, getItemDefs, cleanOrphanItemDefs
 } from '../api/client'
 import type { AdjustmentRule, FinancialItemDef } from '../types'
+import { FormulaInput } from '../components/FormulaInput'
 
 const { Title, Text } = Typography
 
@@ -184,7 +185,18 @@ export default function AdjustmentRulesPage() {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Title level={4} style={{ margin: 0 }}>Aktarma / Arındırma Kuralları</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={openAdd}>Yeni Kural</Button>
+        <Space>
+          <Button onClick={async () => {
+            try {
+              const n = await cleanOrphanItemDefs()
+              message.success(`${n} boşta kalem silindi`)
+              loadItemDefs()
+            } catch (e: unknown) { message.error(String(e)) }
+          }}>
+            Boşta Kalemleri Temizle
+          </Button>
+          <Button type="primary" icon={<PlusOutlined />} onClick={openAdd}>Yeni Kural</Button>
+        </Space>
       </div>
 
       <Table rowKey="id" columns={columns} dataSource={rules} loading={loading} pagination={{ pageSize: 20 }} />
@@ -276,20 +288,27 @@ export default function AdjustmentRulesPage() {
                       />
                     </Space>
 
-                    {/* Formula — Form.Item wraps only Input so value binding works */}
+                    {/* Formula with autocomplete */}
                     <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                      <Form.Item
-                        name={[stepIdx, 'formula']}
-                        label="Formül"
-                        rules={[{ validator: validateFormula }]}
-                        style={{ flex: 1, marginBottom: 0 }}
-                      >
-                        <Input
-                          placeholder="örn: {FI0001} + {FI0002} - {FI0003}"
-                          onBlur={e => setCursorPos(p => ({ ...p, [stepIdx]: e.target.selectionStart ?? 0 }))}
-                          onClick={e => setCursorPos(p => ({ ...p, [stepIdx]: (e.target as HTMLInputElement).selectionStart ?? 0 }))}
-                          onKeyUp={e => setCursorPos(p => ({ ...p, [stepIdx]: (e.target as HTMLInputElement).selectionStart ?? 0 }))}
-                        />
+                      <Form.Item shouldUpdate noStyle>
+                        {({ getFieldValue }) => {
+                          const stmtType = getFieldValue(['steps', stepIdx, 'sourceStatementType'])
+                          return (
+                            <Form.Item
+                              name={[stepIdx, 'formula']}
+                              label="Formül"
+                              rules={[{ validator: validateFormula }]}
+                              style={{ flex: 1, marginBottom: 0 }}
+                            >
+                              <FormulaInput
+                                itemDefs={itemDefs}
+                                filterType={stmtType}
+                                placeholder="örn: {FI0001} + {FI0002} - {FI0003}"
+                                onCursorChange={pos => setCursorPos(p => ({ ...p, [stepIdx]: pos }))}
+                              />
+                            </Form.Item>
+                          )
+                        }}
                       </Form.Item>
                       <Button
                         icon={<SearchOutlined />}
@@ -366,8 +385,16 @@ export default function AdjustmentRulesPage() {
               style: { cursor: 'pointer' },
             })}
             columns={[
-              { title: 'Kod', dataIndex: 'code', key: 'code', width: 100 },
+              { title: 'Kod', dataIndex: 'code', key: 'code', width: 90 },
               { title: 'Kalem Adı', dataIndex: 'name', key: 'name' },
+              {
+                title: 'Tablo', dataIndex: 'statementType', key: 'statementType', width: 110,
+                render: (v: string) => {
+                  const labels: Record<string, string> = { BALANCE_SHEET: 'Bilanço', INCOME_STATEMENT: 'Gelir Tab.', TRIAL_BALANCE: 'Mizan' }
+                  const colors: Record<string, string> = { BALANCE_SHEET: 'blue', INCOME_STATEMENT: 'green', TRIAL_BALANCE: 'orange' }
+                  return v ? <Tag color={colors[v]} style={{ fontSize: 11 }}>{labels[v] ?? v}</Tag> : '-'
+                },
+              },
               {
                 title: '', key: 'ins', width: 60,
                 render: (_: unknown, rec: FinancialItemDef) => (

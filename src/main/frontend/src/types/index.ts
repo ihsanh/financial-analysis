@@ -5,6 +5,7 @@ export interface FinancialItemDef {
   code: string
   name: string
   statementType?: StatementType
+  level?: number
 }
 
 export interface Company {

@@ -25,6 +25,9 @@ public class FinancialItemDef {
     @Column(name = "statement_type", length = 30)
     private StatementType statementType;
 
+    @Column(name = "level")
+    private Integer level;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

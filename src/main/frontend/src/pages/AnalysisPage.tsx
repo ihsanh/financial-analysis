@@ -7,9 +7,9 @@ import type { ColumnsType } from 'antd/es/table'
 import { EyeOutlined } from '@ant-design/icons'
 import {
   getCompanies, getRatioRules, getAdjustmentRules, runAnalysis,
-  getStatements, getStatement
+  getStatements, getStatement, getItemDefs
 } from '../api/client'
-import type { Company, RatioRule, AdjustmentRule, FinancialStatement, StatementType } from '../types'
+import type { Company, RatioRule, AdjustmentRule, FinancialStatement, FinancialItemDef, StatementType } from '../types'
 
 const { Title, Text } = Typography
 
@@ -50,6 +50,7 @@ export default function AnalysisPage() {
   const [companies, setCompanies] = useState<Company[]>([])
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
   const [allStatements, setAllStatements] = useState<FinancialStatement[]>([])
+  const [itemDefs, setItemDefs] = useState<FinancialItemDef[]>([])
 
   // ── statement view ───────────────────────────────────────────────
   const [adjRules, setAdjRules] = useState<AdjustmentRule[]>([])
@@ -70,13 +71,45 @@ export default function AnalysisPage() {
   const [ratioError, setRatioError] = useState<string | null>(null)
 
   useEffect(() => {
-    Promise.all([getCompanies(), getRatioRules(true), getAdjustmentRules(true)])
-      .then(([c, r, a]) => { setCompanies(c); setRatioRules(r); setAdjRules(a) })
+    Promise.all([getCompanies(), getRatioRules(true), getAdjustmentRules(true), getItemDefs()])
+      .then(([c, r, a, defs]) => { setCompanies(c); setRatioRules(r); setAdjRules(a); setItemDefs(defs) })
       .catch(() => {})
   }, [])
 
   const parsePeriod = (p: string) => { const [y, m] = p.split('/').map(Number); return y * 100 + m }
   const periodSort = (a: string, b: string) => parsePeriod(b) - parsePeriod(a)
+
+  const codeToName = useMemo(
+    () => new Map(itemDefs.map(d => [d.code, d.name])),
+    [itemDefs]
+  )
+
+  const renderFormulaTokens = (formula: string) => {
+    const parts = formula.split(/(\{[^}]+\})/g)
+    return (
+      <span style={{ fontFamily: 'monospace', fontSize: 11, lineHeight: 2 }}>
+        {parts.map((part, i) => {
+          const m = part.match(/^\{([^}]+)\}$/)
+          if (m) {
+            const code = m[1]
+            const name = codeToName.get(code)
+            return (
+              <Tooltip key={i} title={code} placement="top">
+                <span style={{
+                  background: '#f0f5ff', border: '1px solid #adc6ff',
+                  borderRadius: 3, padding: '1px 4px', color: '#2f54eb',
+                  cursor: 'help', whiteSpace: 'nowrap',
+                }}>
+                  {name ?? code}
+                </span>
+              </Tooltip>
+            )
+          }
+          return <span key={i} style={{ padding: '0 2px', color: '#595959' }}>{part}</span>
+        })}
+      </span>
+    )
+  }
 
   const onCompanyChange = async (id: number) => {
     setSelectedCompany(id)
@@ -198,13 +231,19 @@ export default function AnalysisPage() {
     if (!resolved || Object.keys(resolved).length === 0) return null
     return (
       <div style={{ fontSize: 12 }}>
-        {Object.entries(resolved).map(([code, val]) => (
-          <div key={code}>
-            <b>{code}</b> = {val != null
-              ? val.toLocaleString('tr-TR', { minimumFractionDigits: 2 })
-              : <span style={{ color: '#ff7875' }}>bulunamadı</span>}
-          </div>
-        ))}
+        {Object.entries(resolved).map(([code, val]) => {
+          const name = codeToName.get(code)
+          return (
+            <div key={code} style={{ marginBottom: 2 }}>
+              <b style={{ color: '#adc6ff' }}>{code}</b>
+              {name && <span style={{ color: '#e6f4ff', marginLeft: 4 }}>{name}</span>}
+              <span style={{ color: '#d9d9d9' }}> = </span>
+              {val != null
+                ? <b>{val.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</b>
+                : <span style={{ color: '#ff7875' }}>bulunamadı</span>}
+            </div>
+          )
+        })}
       </div>
     )
   }
@@ -247,7 +286,15 @@ export default function AnalysisPage() {
         ? <Tag color={CATEGORY_COLORS[v] ?? 'default'} style={{ fontSize: 11 }}>{CATEGORY_LABELS[v] ?? v}</Tag>
         : '-'
     },
-    { title: 'Rasyo', dataIndex: 'ratioName', key: 'ratioName', fixed: 'left', width: 200 },
+    {
+      title: 'Rasyo', dataIndex: 'ratioName', key: 'ratioName', fixed: 'left', width: 260,
+      render: (name: string, r: MultiRatioRow) => (
+        <div>
+          <div style={{ fontWeight: 500 }}>{name}</div>
+          <div style={{ marginTop: 2 }}>{renderFormulaTokens(r.formula)}</div>
+        </div>
+      ),
+    },
     ...ratioActivePeriods.map(p => ({
       title: p, key: p, align: 'right' as const, width: 120,
       render: (_: unknown, r: MultiRatioRow) => {

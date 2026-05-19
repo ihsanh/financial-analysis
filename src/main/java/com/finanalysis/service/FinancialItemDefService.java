@@ -19,7 +19,7 @@ public class FinancialItemDefService {
     private final FinancialItemDefRepository repository;
 
     @Transactional
-    public FinancialItemDef findOrCreate(String name, String excelCode, StatementType statementType) {
+    public FinancialItemDef findOrCreate(String name, String excelCode, StatementType statementType, int level) {
         String trimmedName = name.trim();
         return repository.findByNameIgnoreCase(trimmedName).orElseGet(() -> {
             String code;
@@ -34,6 +34,7 @@ public class FinancialItemDefService {
                     .code(code)
                     .name(trimmedName)
                     .statementType(statementType)
+                    .level(level)
                     .build();
             return repository.save(def);
         });
@@ -45,12 +46,19 @@ public class FinancialItemDefService {
                 ? repository.findByStatementType(type, sort)
                 : repository.findAll(sort);
         return items.stream()
-                .map(d -> new FinancialItemDefDto(d.getId(), d.getCode(), d.getName(), d.getStatementType()))
+                .map(d -> new FinancialItemDefDto(d.getId(), d.getCode(), d.getName(), d.getStatementType(), d.getLevel()))
                 .toList();
     }
 
+    @Transactional
+    public int cleanOrphans() {
+        return repository.deleteOrphans();
+    }
+
     private String generateCode() {
-        long count = repository.count();
-        return String.format("FI%04d", count + 1);
+        return repository.findMaxCode()
+                .filter(c -> c.matches("FI\\d+"))
+                .map(c -> String.format("FI%04d", Integer.parseInt(c.substring(2)) + 1))
+                .orElse("FI0001");
     }
 }

@@ -47,6 +47,8 @@ export const deleteStatement = (id: number) => api.delete(`/statements/${id}`)
 // Financial Item Definitions
 export const getItemDefs = (type?: StatementType) =>
   api.get<FinancialItemDef[]>('/item-defs', { params: type ? { type } : {} }).then(r => r.data)
+export const cleanOrphanItemDefs = () =>
+  api.delete<number>('/item-defs/orphans').then(r => r.data)
 
 // Ratio Rules
 export const getRatioRules = (activeOnly?: boolean) =>

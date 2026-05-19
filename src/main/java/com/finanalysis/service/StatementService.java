@@ -98,7 +98,7 @@ public class StatementService {
             List<FinancialLineItem> items = parsed.items().stream()
                     .map(raw -> {
                         // Register item in dictionary; assign system code if raw has none
-                        var def = itemDefService.findOrCreate(raw.name(), raw.code(), type);
+                        var def = itemDefService.findOrCreate(raw.name(), raw.code(), type, raw.level());
                         var entity = excelParser.toEntity(raw, statement);
                         if (entity.getCode() == null || entity.getCode().isBlank()) {
                             entity.setCode(def.getCode());

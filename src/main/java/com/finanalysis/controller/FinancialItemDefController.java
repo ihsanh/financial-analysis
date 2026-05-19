@@ -20,4 +20,9 @@ public class FinancialItemDefController {
             @RequestParam(required = false) StatementType type) {
         return service.findAll(type);
     }
+
+    @DeleteMapping("/orphans")
+    public int cleanOrphans() {
+        return service.cleanOrphans();
+    }
 }
