@@ -9,7 +9,10 @@
       "Bash(npm --version)",
       "PowerShell(npm --version)",
       "PowerShell(node --version)",
-      "PowerShell(winget install OpenJS.NodeJS.LTS --accept-source-agreements --accept-package-agreements)"
+      "PowerShell(winget install OpenJS.NodeJS.LTS --accept-source-agreements --accept-package-agreements)",
+      "Bash(npx tsc *)",
+      "Bash(curl -s -X DELETE http://localhost:8080/api/ratio-rules/1 -w \"\\\\nHTTP %{http_code}\")",
+      "Bash(curl -s -X DELETE http://localhost:8080/api/ratio-rules/2 -w \"\\\\nHTTP %{http_code}\")"
     ]
   }
 }

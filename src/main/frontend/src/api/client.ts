@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type {
   Company, FinancialStatement, RatioRule, AdjustmentRule,
-  StatementType, AnalysisResponse
+  StatementType, AnalysisResponse, FinancialItemDef
 } from '../types'
 
 const api = axios.create({ baseURL: '/api' })
@@ -43,6 +43,10 @@ export const uploadStatementMulti = (companyId: number, type: StatementType, fil
   return api.post<FinancialStatement[]>('/statements/upload-multi', form).then(r => r.data)
 }
 export const deleteStatement = (id: number) => api.delete(`/statements/${id}`)
+
+// Financial Item Definitions
+export const getItemDefs = (type?: StatementType) =>
+  api.get<FinancialItemDef[]>('/item-defs', { params: type ? { type } : {} }).then(r => r.data)
 
 // Ratio Rules
 export const getRatioRules = (activeOnly?: boolean) =>

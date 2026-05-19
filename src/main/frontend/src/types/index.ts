@@ -1,5 +1,12 @@
 export type StatementType = 'BALANCE_SHEET' | 'INCOME_STATEMENT' | 'TRIAL_BALANCE'
 
+export interface FinancialItemDef {
+  id: number
+  code: string
+  name: string
+  statementType?: StatementType
+}
+
 export interface Company {
   id: number
   name: string
@@ -75,6 +82,7 @@ export interface RatioResult {
   formula: string
   value?: number
   error?: string
+  resolvedValues?: Record<string, number | null>
 }
 
 export interface AdjustmentResult {

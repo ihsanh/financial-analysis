@@ -1,205 +1,196 @@
-2026-05-17 13:55:29 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 4720 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-17 13:55:29 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-17 13:55:30 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-17 13:55:30 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 30 ms. Found 5 JPA repository interfaces.
-2026-05-17 13:55:31 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-17 13:55:31 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-17 13:55:31 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-17 13:55:31 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-17 13:55:31 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1326 ms
-2026-05-17 13:55:31 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-17 13:55:31 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-17 13:55:31 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-17 13:55:31 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-17 13:55:31 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-17 13:55:31 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-17 13:55:32 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 13:55:32 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-17 13:55:33 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-17 13:55:33 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-17 13:55:33 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-17 13:55:33 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-17 13:55:34 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.687 seconds (process running for 5.134)
-2026-05-17 13:55:34 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-17 13:55:34 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-17 13:55:35 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-17 14:04:12 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 9492 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-17 14:04:12 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-17 14:04:13 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-17 14:04:13 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 5 JPA repository interfaces.
-2026-05-17 14:04:13 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-17 14:04:13 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-17 14:04:13 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-17 14:04:13 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-17 14:04:13 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1179 ms
-2026-05-17 14:04:14 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-17 14:04:14 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-17 14:04:14 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-17 14:04:14 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-17 14:04:14 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-17 14:04:14 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-17 14:04:15 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 14:04:15 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-17 14:04:15 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-17 14:04:15 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-17 14:04:16 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-17 14:04:16 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-17 14:04:16 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.15 seconds (process running for 4.476)
-2026-05-17 14:04:16 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-17 14:04:16 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-17 14:04:18 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-17 14:05:04 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 4068 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-17 14:05:04 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-17 14:05:05 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-17 14:05:05 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 5 JPA repository interfaces.
-2026-05-17 14:05:05 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-17 14:05:05 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-17 14:05:05 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-17 14:05:05 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-17 14:05:05 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1218 ms
-2026-05-17 14:05:05 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-17 14:05:06 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-17 14:05:06 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-17 14:05:06 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-17 14:05:06 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-17 14:05:06 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-17 14:05:07 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 14:05:07 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-17 14:05:07 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-17 14:05:07 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-17 14:05:08 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-17 14:05:08 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-17 14:05:08 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.139 seconds (process running for 4.459)
-2026-05-17 14:05:08 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-17 14:05:08 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-17 14:05:10 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-17 14:15:57 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 24080 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-17 14:15:57 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-17 14:15:58 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-17 14:15:58 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 29 ms. Found 5 JPA repository interfaces.
-2026-05-17 14:15:59 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-17 14:15:59 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-17 14:15:59 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-17 14:15:59 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-17 14:15:59 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1304 ms
-2026-05-17 14:15:59 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-17 14:15:59 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-17 14:15:59 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-17 14:15:59 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-17 14:15:59 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-17 14:15:59 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-17 14:16:00 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 14:16:00 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-17 14:16:01 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-17 14:16:01 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-17 14:16:01 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-17 14:16:01 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-17 14:16:01 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.14 seconds (process running for 4.464)
-2026-05-17 14:16:01 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-17 14:16:01 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-17 14:16:04 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-17 14:27:47 WARN  [http-nio-8080-exec-3] o.s.w.s.m.support.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
-2026-05-17 14:28:59 WARN  [http-nio-8080-exec-6] o.s.w.s.m.support.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
-2026-05-17 14:29:38 INFO  [SpringApplicationShutdownHook] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 14:29:38 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-05-17 14:29:38 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-2026-05-17 14:29:44 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 26064 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-17 14:29:44 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-17 14:29:45 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-17 14:29:45 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 26 ms. Found 5 JPA repository interfaces.
-2026-05-17 14:29:45 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-17 14:29:45 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-17 14:29:45 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-17 14:29:45 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-17 14:29:45 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1206 ms
-2026-05-17 14:29:45 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-17 14:29:45 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-17 14:29:45 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-17 14:29:45 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-17 14:29:46 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-17 14:29:46 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-17 14:29:46 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 14:29:47 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-17 14:29:47 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-17 14:29:47 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-17 14:29:48 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-17 14:29:48 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-17 14:29:48 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.078 seconds (process running for 4.42)
-2026-05-17 14:29:48 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-17 14:29:48 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-17 14:29:50 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-17 14:40:05 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 23336 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-17 14:40:05 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-17 14:40:06 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-17 14:40:06 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 29 ms. Found 5 JPA repository interfaces.
-2026-05-17 14:40:06 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-17 14:40:06 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-17 14:40:06 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-17 14:40:06 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-17 14:40:06 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1271 ms
-2026-05-17 14:40:07 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-17 14:40:07 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-17 14:40:07 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-17 14:40:07 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-17 14:40:07 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-17 14:40:07 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-17 14:40:08 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 14:40:08 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-17 14:40:09 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-17 14:40:09 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-17 14:40:09 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-17 14:40:09 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-17 14:40:09 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.397 seconds (process running for 4.727)
-2026-05-17 14:40:09 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-17 14:40:09 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-17 14:40:11 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-17 14:44:49 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 7692 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-17 14:44:49 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-17 14:44:50 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-17 14:44:50 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 5 JPA repository interfaces.
-2026-05-17 14:44:50 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-17 14:44:50 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-17 14:44:50 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-17 14:44:51 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-17 14:44:51 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1224 ms
-2026-05-17 14:44:51 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-17 14:44:51 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-17 14:44:51 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-17 14:44:51 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-17 14:44:51 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-17 14:44:51 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-17 14:44:52 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 14:44:52 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-17 14:44:53 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-17 14:44:53 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-17 14:44:53 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-17 14:44:54 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-17 14:44:54 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.584 seconds (process running for 4.919)
-2026-05-17 14:44:54 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-17 14:44:54 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-17 14:44:55 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-17 14:50:47 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 27080 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
-2026-05-17 14:50:47 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
-2026-05-17 14:50:47 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-17 14:50:47 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 5 JPA repository interfaces.
-2026-05-17 14:50:48 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-05-17 14:50:48 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
-2026-05-17 14:50:48 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-05-17 14:50:48 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-05-17 14:50:48 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1203 ms
-2026-05-17 14:50:48 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-05-17 14:50:48 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
-2026-05-17 14:50:48 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-05-17 14:50:48 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
-2026-05-17 14:50:49 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-17 14:50:49 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-17 14:50:49 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-17 14:50:50 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-05-17 14:50:50 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-17 14:50:50 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-05-17 14:50:51 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-05-17 14:50:51 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
-2026-05-17 14:50:51 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.471 seconds (process running for 4.801)
-2026-05-17 14:50:51 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
-2026-05-17 14:50:51 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
-2026-05-17 14:50:53 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19 18:03:41 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 9116 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-19 18:03:41 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-19 18:03:42 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-19 18:03:42 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 34 ms. Found 5 JPA repository interfaces.
+2026-05-19 18:03:42 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-19 18:03:42 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-19 18:03:42 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-19 18:03:43 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-19 18:03:43 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1183 ms
+2026-05-19 18:03:43 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-19 18:03:43 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-19 18:03:43 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-19 18:03:43 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-19 18:03:43 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-19 18:03:43 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-19 18:03:44 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 18:03:44 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-19 18:03:45 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-19 18:03:45 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-19 18:03:45 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-19 18:03:45 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-19 18:03:45 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.013 seconds (process running for 4.336)
+2026-05-19 18:03:45 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-19 18:03:45 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-19 18:04:10 INFO  [http-nio-8080-exec-1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19 18:30:44 INFO  [SpringApplicationShutdownHook] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 18:30:44 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-05-19 18:30:44 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-05-19 18:30:52 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 3392 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-19 18:30:52 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-19 18:30:53 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-19 18:30:53 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 6 JPA repository interfaces.
+2026-05-19 18:30:53 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-19 18:30:53 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-19 18:30:53 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-19 18:30:53 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-19 18:30:53 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1284 ms
+2026-05-19 18:30:53 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-19 18:30:54 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-19 18:30:54 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-19 18:30:54 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-19 18:30:54 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-19 18:30:54 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-19 18:30:55 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 18:30:55 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-19 18:30:55 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-19 18:30:55 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-19 18:30:56 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-19 18:30:56 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-19 18:30:56 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.286 seconds (process running for 4.616)
+2026-05-19 18:30:56 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-19 18:30:56 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-19 18:30:57 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19 21:49:37 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h21m12s898ms733µs900ns).
+2026-05-19 22:06:58 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 25672 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-19 22:06:58 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-19 22:06:59 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-19 22:06:59 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 29 ms. Found 6 JPA repository interfaces.
+2026-05-19 22:07:00 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-19 22:07:00 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-19 22:07:00 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-19 22:07:00 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-19 22:07:00 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1230 ms
+2026-05-19 22:07:00 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-19 22:07:00 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-19 22:07:00 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-19 22:07:00 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-19 22:07:00 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-19 22:07:00 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-19 22:07:01 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 22:07:01 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-19 22:07:02 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-19 22:07:02 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-19 22:07:02 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-19 22:07:02 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-19 22:07:02 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.298 seconds (process running for 4.648)
+2026-05-19 22:07:02 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-19 22:07:02 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-19 22:07:04 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19 22:08:26 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 8852 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-19 22:08:26 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-19 22:08:27 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-19 22:08:27 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 6 JPA repository interfaces.
+2026-05-19 22:08:27 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-19 22:08:27 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-19 22:08:27 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-19 22:08:27 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-19 22:08:27 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1184 ms
+2026-05-19 22:08:27 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-19 22:08:27 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:financial_analysis user=SA
+2026-05-19 22:08:27 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-19 22:08:27 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:financial_analysis'
+2026-05-19 22:08:28 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-19 22:08:28 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-19 22:08:28 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 22:08:29 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-19 22:08:29 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-19 22:08:29 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-19 22:08:30 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-19 22:08:30 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-19 22:08:30 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.078 seconds (process running for 4.426)
+2026-05-19 22:08:30 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Seeding default ratio rules...
+2026-05-19 22:08:30 INFO  [main] com.finanalysis.service.DefaultDataInitializer - Default ratio rules created.
+2026-05-19 22:08:32 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19 22:10:17 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 20828 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-19 22:10:17 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-19 22:10:17 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-19 22:10:17 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 6 JPA repository interfaces.
+2026-05-19 22:10:18 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-19 22:10:18 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-19 22:10:18 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-19 22:10:18 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-19 22:10:18 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1291 ms
+2026-05-19 22:10:18 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-19 22:10:18 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./data/financial_analysis user=SA
+2026-05-19 22:10:18 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-19 22:10:18 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/financial_analysis'
+2026-05-19 22:10:19 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-19 22:10:19 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-19 22:10:19 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 22:10:20 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-19 22:10:20 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-19 22:10:20 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-19 22:10:21 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-19 22:10:21 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-19 22:10:21 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.181 seconds (process running for 4.536)
+2026-05-19 22:10:23 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19 22:18:12 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 2004 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-19 22:18:12 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-19 22:18:13 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-19 22:18:13 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 6 JPA repository interfaces.
+2026-05-19 22:18:13 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-19 22:18:13 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-19 22:18:13 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-19 22:18:13 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-19 22:18:13 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1246 ms
+2026-05-19 22:18:13 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-19 22:18:13 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./data/financial_analysis user=SA
+2026-05-19 22:18:13 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-19 22:18:13 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/financial_analysis'
+2026-05-19 22:18:14 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-19 22:18:14 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-19 22:18:14 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 22:18:15 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-19 22:18:15 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-19 22:18:15 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-19 22:18:16 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-19 22:18:16 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-19 22:18:16 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.497 seconds (process running for 4.847)
+2026-05-19 22:18:17 INFO  [http-nio-8080-exec-1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19 22:19:01 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 9972 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-19 22:19:01 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-19 22:19:01 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-19 22:19:01 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 6 JPA repository interfaces.
+2026-05-19 22:19:02 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-19 22:19:02 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-19 22:19:02 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-19 22:19:02 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-19 22:19:02 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1195 ms
+2026-05-19 22:19:02 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-19 22:19:02 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./data/financial_analysis user=SA
+2026-05-19 22:19:02 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-19 22:19:02 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/financial_analysis'
+2026-05-19 22:19:03 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-19 22:19:03 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-19 22:19:03 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 22:19:04 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-19 22:19:04 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-19 22:19:04 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-19 22:19:05 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-19 22:19:05 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-19 22:19:05 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.11 seconds (process running for 4.465)
+2026-05-19 22:19:07 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19 22:21:28 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Starting FinancialAnalysisApplication using Java 21.0.11 with PID 19792 (C:\Users\Gaming\financial-analysis\target\classes started by Gaming in C:\Users\Gaming\financial-analysis)
+2026-05-19 22:21:28 INFO  [main] com.finanalysis.FinancialAnalysisApplication - The following 1 profile is active: "h2"
+2026-05-19 22:21:28 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-19 22:21:28 INFO  [main] o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 31 ms. Found 6 JPA repository interfaces.
+2026-05-19 22:21:29 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-19 22:21:29 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-19 22:21:29 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-19 22:21:29 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-19 22:21:29 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1106 ms
+2026-05-19 22:21:29 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-19 22:21:29 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./data/financial_analysis user=SA
+2026-05-19 22:21:29 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-19 22:21:29 INFO  [main] o.s.b.autoconfigure.h2.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/financial_analysis'
+2026-05-19 22:21:29 INFO  [main] o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-19 22:21:30 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-19 22:21:30 INFO  [main] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-19 22:21:30 INFO  [main] o.s.data.jpa.repository.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-19 22:21:31 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-19 22:21:31 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-19 22:21:31 INFO  [main] o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-19 22:21:31 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-05-19 22:21:31 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 3.946 seconds (process running for 4.28)
+2026-05-19 22:21:42 INFO  [http-nio-8080-exec-1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'

@@ -24,6 +24,7 @@ public class StatementService {
     private final FinancialStatementRepository statementRepository;
     private final CompanyRepository companyRepository;
     private final ExcelStatementParser excelParser;
+    private final FinancialItemDefService itemDefService;
 
     public List<FinancialStatementDto> findByCompany(Long companyId) {
         return statementRepository.findByCompanyId(companyId)
@@ -95,7 +96,15 @@ public class StatementService {
                     .build();
 
             List<FinancialLineItem> items = parsed.items().stream()
-                    .map(raw -> excelParser.toEntity(raw, statement))
+                    .map(raw -> {
+                        // Register item in dictionary; assign system code if raw has none
+                        var def = itemDefService.findOrCreate(raw.name(), raw.code(), type);
+                        var entity = excelParser.toEntity(raw, statement);
+                        if (entity.getCode() == null || entity.getCode().isBlank()) {
+                            entity.setCode(def.getCode());
+                        }
+                        return entity;
+                    })
                     .toList();
             statement.getLineItems().addAll(items);
             return toDto(statementRepository.save(statement), false);

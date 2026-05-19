@@ -4,18 +4,20 @@ import com.finanalysis.dto.*;
 import com.finanalysis.model.*;
 import com.finanalysis.repository.AdjustmentRuleRepository;
 import com.finanalysis.repository.CompanyRepository;
+import com.finanalysis.repository.FinancialItemDefRepository;
 import com.finanalysis.repository.FinancialStatementRepository;
 import com.finanalysis.repository.RatioRuleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class AnalysisService {
     private final FinancialStatementRepository statementRepository;
     private final RatioRuleRepository ratioRuleRepository;
     private final AdjustmentRuleRepository adjustmentRuleRepository;
+    private final FinancialItemDefRepository itemDefRepository;
     private final ExpressionParser spelParser = new SpelExpressionParser();
 
     public AnalysisResponseDto analyze(AnalysisRequestDto request) {
@@ -42,7 +45,7 @@ public class AnalysisService {
         Map<String, BigDecimal> allValues = new HashMap<>();
         valuesByType.values().forEach(allValues::putAll);
 
-        List<RatioResultDto> ratioResults = calculateRatios(request.ratioRuleIds(), valuesByType);
+        List<RatioResultDto> ratioResults = calculateRatios(request.ratioRuleIds(), allValues);
         List<AdjustmentResultDto> adjustmentResults = applyAdjustments(request.adjustmentRuleIds(), allValues);
 
         return new AnalysisResponseDto(
@@ -56,46 +59,67 @@ public class AnalysisService {
             Map<String, BigDecimal> codeMap = new HashMap<>();
             for (FinancialLineItem item : s.getLineItems()) {
                 BigDecimal value = item.getValue() != null ? item.getValue() : BigDecimal.ZERO;
-                codeMap.put(item.getCode(), value);
+                String code = (item.getCode() != null && !item.getCode().isBlank())
+                        ? item.getCode()
+                        : itemDefRepository.findByNameIgnoreCase(item.getName() != null ? item.getName().trim() : "")
+                                .map(def -> def.getCode())
+                                .orElse(item.getName());
+                if (code != null) {
+                    codeMap.put(code, value);
+                }
             }
             result.put(s.getType(), codeMap);
         }
         return result;
     }
 
+    private static final Pattern CODE_PATTERN = Pattern.compile("\\{([^}]+)}");
+
     private List<RatioResultDto> calculateRatios(List<Long> ruleIds,
-                                                  Map<StatementType, Map<String, BigDecimal>> valuesByType) {
+                                                  Map<String, BigDecimal> allValues) {
         if (ruleIds == null || ruleIds.isEmpty()) return List.of();
 
         List<RatioRule> rules = ratioRuleRepository.findAllById(ruleIds);
         List<RatioResultDto> results = new ArrayList<>();
 
         for (RatioRule rule : rules) {
+            Map<String, BigDecimal> resolved = resolveFormulaValues(rule.getFormula(), allValues);
             try {
-                BigDecimal value = evaluateRatioFormula(rule, valuesByType);
+                BigDecimal value = evaluateRatioFormula(rule.getFormula(), allValues);
                 results.add(new RatioResultDto(rule.getId(), rule.getName(),
-                        rule.getCategory(), rule.getFormula(), value, null));
+                        rule.getCategory(), rule.getFormula(), value, null, resolved));
             } catch (Exception e) {
                 results.add(new RatioResultDto(rule.getId(), rule.getName(),
-                        rule.getCategory(), rule.getFormula(), null, e.getMessage()));
+                        rule.getCategory(), rule.getFormula(), null, e.getMessage(), resolved));
             }
         }
         return results;
     }
 
-    private BigDecimal evaluateRatioFormula(RatioRule rule,
-                                             Map<StatementType, Map<String, BigDecimal>> valuesByType) {
-        StandardEvaluationContext context = new StandardEvaluationContext();
-
-        for (RatioVariable var : rule.getVariables()) {
-            Map<String, BigDecimal> codeMap = valuesByType.getOrDefault(var.getStatementType(), Map.of());
-            BigDecimal varValue = codeMap.getOrDefault(var.getLineItemCode(), BigDecimal.ZERO);
-            context.setVariable(var.getVariableName(), varValue.doubleValue());
+    /** Extracts every {CODE} in the formula and maps it to its value (null = not found). */
+    private Map<String, BigDecimal> resolveFormulaValues(String formula, Map<String, BigDecimal> allValues) {
+        Map<String, BigDecimal> resolved = new LinkedHashMap<>();
+        Matcher m = CODE_PATTERN.matcher(formula);
+        while (m.find()) {
+            String code = m.group(1);
+            resolved.put(code, allValues.get(code));
         }
+        return resolved;
+    }
 
-        // Convert {varName} -> #varName for SpEL
-        String spelFormula = rule.getFormula().replaceAll("\\{([^}]+)}", "#$1");
-        Double result = spelParser.parseExpression(spelFormula).getValue(context, Double.class);
+    private BigDecimal evaluateRatioFormula(String formula, Map<String, BigDecimal> values) {
+        String resolved = formula;
+        for (Map.Entry<String, BigDecimal> entry : values.entrySet()) {
+            BigDecimal val = entry.getValue() != null ? entry.getValue() : BigDecimal.ZERO;
+            resolved = resolved.replace("{" + entry.getKey() + "}", val.toPlainString());
+        }
+        if (resolved.contains("{")) {
+            Matcher m = CODE_PATTERN.matcher(resolved);
+            List<String> missing = new ArrayList<>();
+            while (m.find()) missing.add(m.group(1));
+            throw new IllegalArgumentException("Kalem bulunamadı: " + String.join(", ", missing));
+        }
+        Double result = spelParser.parseExpression(resolved).getValue(Double.class);
         if (result == null) return null;
         return BigDecimal.valueOf(result).setScale(4, RoundingMode.HALF_UP);
     }

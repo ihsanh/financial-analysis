@@ -3,11 +3,53 @@ import {
   Table, Button, Modal, Form, Input, Select, Space, Popconfirm,
   message, Typography, Switch, Divider, InputNumber
 } from 'antd'
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import { getAdjustmentRules, createAdjustmentRule, updateAdjustmentRule, toggleAdjustmentRule, deleteAdjustmentRule } from '../api/client'
-import type { AdjustmentRule } from '../types'
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import {
+  getAdjustmentRules, createAdjustmentRule, updateAdjustmentRule,
+  toggleAdjustmentRule, deleteAdjustmentRule, getItemDefs
+} from '../api/client'
+import type { AdjustmentRule, FinancialItemDef } from '../types'
 
 const { Title, Text } = Typography
+
+const validateFormula = (_: unknown, value: string): Promise<void> => {
+  if (!value?.trim()) return Promise.reject('Formül zorunludur')
+
+  // Balanced parentheses
+  let depth = 0
+  for (const ch of value) {
+    if (ch === '(') depth++
+    else if (ch === ')') { depth--; if (depth < 0) return Promise.reject('Fazla kapanan parantez ")"') }
+  }
+  if (depth > 0) return Promise.reject(`${depth} adet parantez kapatılmamış`)
+
+  // Balanced curly braces
+  let brace = 0
+  for (const ch of value) {
+    if (ch === '{') brace++
+    else if (ch === '}') { brace--; if (brace < 0) return Promise.reject('Fazla kapanan süslü parantez "}"') }
+  }
+  if (brace > 0) return Promise.reject('Kalem kodu süslü parantezi kapatılmamış { }')
+
+  // Empty curly braces
+  if (/\{\s*\}/.test(value)) return Promise.reject('Boş kalem kodu { } kullanılamaz')
+
+  // After stripping {CODE} blocks, remaining chars must be valid math
+  const stripped = value.replace(/\{[^}]+\}/g, '0')
+  if (!/^[\d\s+\-*/().,%]+$/.test(stripped))
+    return Promise.reject('Geçersiz karakter — yalnızca sayı, operatör (+−*/), parantez kullanılabilir')
+
+  // No consecutive operators (e.g. ++, *-, /*)
+  if (/[+\-*/]{2,}/.test(stripped.replace(/\s/g, '')))
+    return Promise.reject('Ardışık operatör kullanılamaz (örn: ++, *-)')
+
+  // Must not start/end with an operator (after trimming)
+  const t = stripped.trim()
+  if (/^[+*/]/.test(t)) return Promise.reject('Formül bir operatörle başlayamaz')
+  if (/[+\-*/]$/.test(t)) return Promise.reject('Formül bir operatörle bitemez')
+
+  return Promise.resolve()
+}
 
 const STATEMENT_OPTIONS = [
   { value: 'BALANCE_SHEET', label: 'Bilanço' },
@@ -22,6 +64,14 @@ export default function AdjustmentRulesPage() {
   const [editing, setEditing] = useState<AdjustmentRule | null>(null)
   const [form] = Form.useForm()
 
+  const [itemDefs, setItemDefs] = useState<FinancialItemDef[]>([])
+  const [itemSearch, setItemSearch] = useState('')
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [pickerTarget, setPickerTarget] = useState<number | null>(null)
+  const [pickerType, setPickerType] = useState<string | null>(null)
+  // Track last cursor position per step index
+  const [cursorPos, setCursorPos] = useState<Record<number, number>>({})
+
   const load = async () => {
     setLoading(true)
     try { setRules(await getAdjustmentRules()) }
@@ -29,7 +79,12 @@ export default function AdjustmentRulesPage() {
     finally { setLoading(false) }
   }
 
-  useEffect(() => { load() }, [])
+  const loadItemDefs = async () => {
+    try { setItemDefs(await getItemDefs()) }
+    catch { /* non-critical */ }
+  }
+
+  useEffect(() => { load(); loadItemDefs() }, [])
 
   const openAdd = () => {
     setEditing(null)
@@ -37,7 +92,11 @@ export default function AdjustmentRulesPage() {
     setModalOpen(true)
   }
 
-  const openEdit = (r: AdjustmentRule) => { setEditing(r); form.setFieldsValue(r); setModalOpen(true) }
+  const openEdit = (r: AdjustmentRule) => {
+    setEditing(r)
+    form.setFieldsValue(r)
+    setModalOpen(true)
+  }
 
   const handleSave = async () => {
     const values = await form.validateFields()
@@ -65,18 +124,51 @@ export default function AdjustmentRulesPage() {
     catch (e: unknown) { message.error(String(e)) }
   }
 
+  // Insert {CODE} at cursor position in the formula of step `pickerTarget`
+  const insertCode = (code: string) => {
+    if (pickerTarget === null) return
+    const steps: Record<string, string>[] = form.getFieldValue('steps') ?? []
+    const current: string = steps[pickerTarget]?.formula ?? ''
+    const pos = cursorPos[pickerTarget] ?? current.length
+    const token = `{${code}}`
+    const updated = current.slice(0, pos) + token + current.slice(pos)
+    form.setFieldValue(['steps', pickerTarget, 'formula'], updated)
+    setCursorPos(prev => ({ ...prev, [pickerTarget!]: pos + token.length }))
+    setPickerOpen(false)
+    setItemSearch('')
+  }
+
+  // When user selects output item from dictionary, populate both outputCode and outputName
+  const handleOutputSelect = (stepIndex: number, code: string) => {
+    const def = itemDefs.find(d => d.code === code)
+    if (!def) return
+    form.setFieldValue(['steps', stepIndex, 'outputCode'], def.code)
+    form.setFieldValue(['steps', stepIndex, 'outputName'], def.name)
+  }
+
+  const itemSelectOptions = (stepType?: string) =>
+    itemDefs
+      .filter(d => !stepType || d.statementType === stepType)
+      .map(d => ({ value: d.code, label: `${d.code} — ${d.name}` }))
+
+  const filteredItems = itemDefs.filter(d =>
+    (!pickerType || d.statementType === pickerType) &&
+    (d.code.toLowerCase().includes(itemSearch.toLowerCase()) ||
+     d.name.toLowerCase().includes(itemSearch.toLowerCase()))
+  )
+
   const columns = [
     { title: 'Kural Adı', dataIndex: 'name', key: 'name' },
     { title: 'Açıklama', dataIndex: 'description', key: 'description', ellipsis: true },
-    { title: 'Adım Sayısı', key: 'steps', render: (_: unknown, rec: AdjustmentRule) => rec.steps?.length ?? 0 },
+    { title: 'Adım', key: 'steps', width: 80, render: (_: unknown, rec: AdjustmentRule) => rec.steps?.length ?? 0 },
     {
-      title: 'Aktif', dataIndex: 'isActive', key: 'isActive',
+      title: 'Aktif', dataIndex: 'isActive', key: 'isActive', width: 80,
       render: (v: boolean, rec: AdjustmentRule) => (
         <Switch checked={v} size="small" onChange={() => rec.id && handleToggle(rec.id)} />
       )
     },
     {
-      title: 'İşlemler', key: 'actions', width: 120,
+      title: 'İşlemler', key: 'actions', width: 100,
       render: (_: unknown, rec: AdjustmentRule) => (
         <Space>
           <Button size="small" icon={<EditOutlined />} onClick={() => openEdit(rec)} />
@@ -97,6 +189,7 @@ export default function AdjustmentRulesPage() {
 
       <Table rowKey="id" columns={columns} dataSource={rules} loading={loading} pagination={{ pageSize: 20 }} />
 
+      {/* Kural düzenleme modal */}
       <Modal
         title={editing ? 'Kuralı Düzenle' : 'Yeni Aktarma/Arındırma Kuralı'}
         open={modalOpen}
@@ -104,7 +197,8 @@ export default function AdjustmentRulesPage() {
         onCancel={() => setModalOpen(false)}
         okText="Kaydet"
         cancelText="İptal"
-        width={800}
+        width={920}
+        styles={{ body: { maxHeight: '78vh', overflowY: 'auto' } }}
       >
         <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
           <Space style={{ width: '100%' }} styles={{ item: { flex: 1 } }}>
@@ -120,49 +214,171 @@ export default function AdjustmentRulesPage() {
           </Form.Item>
 
           <Divider>Hesaplama Adımları</Divider>
-          <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
-            Her adım bir finansal kalem üretir. Formülde diğer kalemlere &#123;kod&#125; şeklinde erişilir. Örn: &#123;100&#125; + &#123;200&#125;
+          <Text type="secondary" style={{ display: 'block', marginBottom: 12, fontSize: 12 }}>
+            Her adım bir finansal kaleme hesaplanmış değer yazar.
+            Formülde <b>&#123;KOD&#125;</b> sözdizimini kullanın — <b>Kalem Ekle</b> butonuyla sözlükten seçin.
           </Text>
+
           <Form.List name="steps">
             {(fields, { add, remove }) => (
               <>
-                {fields.map(({ key, name }) => (
-                  <div key={key} style={{ border: '1px solid #f0f0f0', borderRadius: 6, padding: 12, marginBottom: 12, background: '#fafafa' }}>
-                    <Space align="start" style={{ width: '100%', flexWrap: 'wrap' }}>
-                      <Form.Item name={[name, 'stepOrder']} label="Sıra" rules={[{ required: true }]}>
-                        <InputNumber min={1} style={{ width: 70 }} />
+                {fields.map(({ key, name: stepIdx }) => (
+                  <div key={key} style={{ border: '1px solid #e8e8e8', borderRadius: 6, padding: 12, marginBottom: 12, background: '#fafafa' }}>
+                    <Space align="start" style={{ width: '100%', flexWrap: 'wrap' }} size={8}>
+                      <Form.Item name={[stepIdx, 'stepOrder']} label="Sıra" rules={[{ required: true }]}>
+                        <InputNumber min={1} style={{ width: 64 }} />
                       </Form.Item>
-                      <Form.Item name={[name, 'outputCode']} label="Çıktı Kodu" rules={[{ required: true }]}>
-                        <Input placeholder="örn. EBITDA" style={{ width: 120 }} />
+
+                      {/* Output item — filtered by sourceStatementType */}
+                      <Form.Item shouldUpdate noStyle>
+                        {({ getFieldValue }) => {
+                          const stepType = getFieldValue(['steps', stepIdx, 'sourceStatementType'])
+                          return (
+                            <Form.Item
+                              name={[stepIdx, 'outputCode']}
+                              label="Sonuç Kalemi"
+                              rules={[{ required: true, message: 'Kalem seçiniz' }]}
+                              style={{ flex: 1, minWidth: 260 }}
+                            >
+                              <Select
+                                showSearch
+                                placeholder="Kalemi listeden seçin"
+                                options={itemSelectOptions(stepType)}
+                                filterOption={(input, opt) =>
+                                  (opt?.label as string ?? '').toLowerCase().includes(input.toLowerCase())
+                                }
+                                onChange={(val: string) => handleOutputSelect(stepIdx, val)}
+                                notFoundContent={
+                                  <Text type="secondary" style={{ fontSize: 12 }}>
+                                    {stepType ? 'Bu tabloya ait kalem yok' : 'Kalem bulunamadı — önce Excel yükleyin'}
+                                  </Text>
+                                }
+                              />
+                            </Form.Item>
+                          )
+                        }}
                       </Form.Item>
-                      <Form.Item name={[name, 'outputName']} label="Kalem Adı" rules={[{ required: true }]}>
-                        <Input placeholder="örn. FAVÖK" style={{ width: 180 }} />
+
+                      {/* Hidden outputName — auto-filled when outputCode selected */}
+                      <Form.Item name={[stepIdx, 'outputName']} hidden>
+                        <Input />
                       </Form.Item>
-                      <Form.Item name={[name, 'sourceStatementType']} label="Kaynak Tablo">
-                        <Select options={STATEMENT_OPTIONS} placeholder="Seçiniz" style={{ width: 160 }} allowClear />
+
+                      <Form.Item name={[stepIdx, 'sourceStatementType']} label="Kaynak Tablo">
+                        <Select options={STATEMENT_OPTIONS} placeholder="Seçiniz" style={{ width: 155 }} allowClear />
                       </Form.Item>
-                      <Button danger icon={<DeleteOutlined />} onClick={() => remove(name)} style={{ marginTop: 30 }} />
+
+                      <Button
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => remove(stepIdx)}
+                        style={{ marginTop: 30 }}
+                      />
                     </Space>
-                    <Form.Item
-                      name={[name, 'formula']}
-                      label="Formül"
-                      rules={[{ required: true }]}
-                      extra="Kalem kodlarını {süslü parantez} içinde kullanın. Örn: {60} - {63}"
-                    >
-                      <Input placeholder="{kod1} + {kod2} - {kod3}" />
-                    </Form.Item>
-                    <Form.Item name={[name, 'description']} label="Açıklama">
+
+                    {/* Formula — Form.Item wraps only Input so value binding works */}
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                      <Form.Item
+                        name={[stepIdx, 'formula']}
+                        label="Formül"
+                        rules={[{ validator: validateFormula }]}
+                        style={{ flex: 1, marginBottom: 0 }}
+                      >
+                        <Input
+                          placeholder="örn: {FI0001} + {FI0002} - {FI0003}"
+                          onBlur={e => setCursorPos(p => ({ ...p, [stepIdx]: e.target.selectionStart ?? 0 }))}
+                          onClick={e => setCursorPos(p => ({ ...p, [stepIdx]: (e.target as HTMLInputElement).selectionStart ?? 0 }))}
+                          onKeyUp={e => setCursorPos(p => ({ ...p, [stepIdx]: (e.target as HTMLInputElement).selectionStart ?? 0 }))}
+                        />
+                      </Form.Item>
+                      <Button
+                        icon={<SearchOutlined />}
+                        style={{ marginTop: 30 }}
+                        onClick={() => {
+                          setPickerTarget(stepIdx)
+                          const steps = form.getFieldValue('steps') ?? []
+                          setPickerType(steps[stepIdx]?.sourceStatementType ?? null)
+                          setPickerOpen(true)
+                        }}
+                      >
+                        Kalem Ekle
+                      </Button>
+                    </div>
+
+                    <Form.Item name={[stepIdx, 'description']} label="Açıklama" style={{ marginBottom: 0, marginTop: 8 }}>
                       <Input placeholder="İsteğe bağlı açıklama" />
                     </Form.Item>
                   </div>
                 ))}
-                <Button type="dashed" onClick={() => add({ stepOrder: fields.length + 1 })} icon={<PlusOutlined />} block>
+                <Button
+                  type="dashed"
+                  onClick={() => add({ stepOrder: fields.length + 1 })}
+                  icon={<PlusOutlined />}
+                  block
+                >
                   Adım Ekle
                 </Button>
               </>
             )}
           </Form.List>
         </Form>
+      </Modal>
+
+      {/* Kalem seçici */}
+      <Modal
+        title="Formüle Kalem Ekle"
+        open={pickerOpen}
+        onCancel={() => { setPickerOpen(false); setItemSearch(''); setPickerType(null) }}
+        footer={null}
+        width={580}
+      >
+        <Select
+          style={{ width: '100%', marginBottom: 8 }}
+          placeholder="Kaynak tablo (tümü)"
+          allowClear
+          value={pickerType}
+          onChange={v => setPickerType(v ?? null)}
+          options={[
+            { value: 'BALANCE_SHEET', label: 'Bilanço' },
+            { value: 'INCOME_STATEMENT', label: 'Gelir Tablosu' },
+            { value: 'TRIAL_BALANCE', label: 'Mizan' },
+          ]}
+        />
+        <Input.Search
+          placeholder="Kod veya kalem adı ara..."
+          value={itemSearch}
+          onChange={e => setItemSearch(e.target.value)}
+          style={{ marginBottom: 12 }}
+          allowClear
+        />
+        {itemDefs.length === 0 ? (
+          <Text type="secondary">
+            Henüz kalem tanımı yok. Excel yükledikten sonra kalemler buraya eklenir.
+          </Text>
+        ) : (
+          <Table
+            size="small"
+            rowKey="id"
+            dataSource={filteredItems}
+            pagination={{ pageSize: 10, showSizeChanger: false }}
+            onRow={record => ({
+              onClick: () => insertCode(record.code),
+              style: { cursor: 'pointer' },
+            })}
+            columns={[
+              { title: 'Kod', dataIndex: 'code', key: 'code', width: 100 },
+              { title: 'Kalem Adı', dataIndex: 'name', key: 'name' },
+              {
+                title: '', key: 'ins', width: 60,
+                render: (_: unknown, rec: FinancialItemDef) => (
+                  <Button size="small" type="link" onClick={e => { e.stopPropagation(); insertCode(rec.code) }}>
+                    Ekle
+                  </Button>
+                ),
+              },
+            ]}
+          />
+        )}
       </Modal>
     </>
   )
