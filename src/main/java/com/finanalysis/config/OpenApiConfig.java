@@ -22,12 +22,13 @@ public class OpenApiConfig {
 
                                 ## Temel Kullanım Akışı
 
-                                1. `POST /api/companies` — firma kaydı oluştur
+                                1. `POST /api/companies` — firma kaydı oluştur (vergi no: 10 haneli sayısal)
                                 2. `POST /api/statements/upload-multi` — Excel'den tüm dönemleri yükle
                                 3. `GET /api/item-defs` — yüklenen kalem kodlarını görüntüle
                                 4. `POST /api/ratio-rules` — oran analizi kuralı tanımla
                                 5. `POST /api/adjustment-rules` — düzeltme adımı tanımla
-                                6. `POST /api/analysis` — hesaplamaları çalıştır
+                                6. `POST /api/analysis` — rasyo ve düzeltme hesaplamalarını çalıştır
+                                7. `POST /api/analysis/interpret` — tüm verileri Gemini AI ile yorumla
 
                                 ## Formül Sözdizimi
 
@@ -40,6 +41,13 @@ public class OpenApiConfig {
 
                                 Dönemler `YYYY/M` formatında belirtilir.
                                 - Örnek: `2025/9` (Eylül 2025), `2024/12` (Aralık 2024)
+
+                                ## AI Finansal Yorum
+
+                                `POST /api/analysis/interpret` endpoint'i rasyo sonuçları, düzeltme kalemleri
+                                ve finansal tablo özetini (Gelir Tablosu + Bilanço + Nakit Akım) alıp
+                                Google Gemini 2.5 Flash modeli üzerinden Türkçe yorumlama üretir.
+                                Gereksinim: `GEMINI_API_KEY` ortam değişkeni tanımlı olmalıdır.
                                 """)
                         .version("1.0.0")
                         .contact(new Contact().name("Finansal Analiz Platformu"))
@@ -56,7 +64,7 @@ public class OpenApiConfig {
                         new Tag().name("Düzeltme Kuralları")
                                 .description("Adım adım finansal tablo düzeltme / yeniden sınıflandırma kuralları"),
                         new Tag().name("Analiz")
-                                .description("Seçili dönem için rasyo ve düzeltme hesaplamalarını tek seferde çalıştırma")
+                                .description("Seçili dönem için rasyo ve düzeltme hesaplamalarını tek seferde çalıştırma; `POST /interpret` ile Gemini AI yorumu alma")
                 ));
     }
 }

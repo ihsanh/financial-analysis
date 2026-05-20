@@ -28,6 +28,7 @@ Kredi analizi ve finansal tablo işleme uygulaması. Şirketlere ait bilanço, g
 | Frontend | React 18 · TypeScript · Vite · Ant Design 5 |
 | Excel okuma | Apache POI 5.2.5 |
 | Formül motoru | Spring Expression Language (SpEL) |
+| AI Yorum | Google Gemini 2.5 Flash (gemini-2.5-flash) |
 | API dokümantasyonu | SpringDoc OpenAPI 2.5 (Swagger UI) |
 | Build | Maven 3 · frontend-maven-plugin |
 | Container | Docker (multi-stage) · OpenShift |
@@ -67,6 +68,7 @@ React uygulaması Maven build sırasında derlenir ve Spring Boot JAR'ının `/s
 ### Firma Yönetimi
 - Firma oluşturma, güncelleme, silme
 - Sektör ve vergi numarası bilgisi
+- Vergi numarası doğrulaması: yalnızca rakam, tam 10 hane (frontend + backend çift katmanlı)
 
 ### Finansal Tablo Yükleme
 - **Tekli yükleme** — bir Excel dosyası, bir dönem
@@ -93,8 +95,13 @@ React uygulaması Maven build sırasında derlenir ve Spring Boot JAR'ının `/s
 
 ### Analiz Sayfası
 - **Özet Finansallar** — seçili iki dönemi karşılaştıran özet tablo (Özet Gelir Tablosu + Özet Bilanço)
-- **Finansal Tablo Görünümü** — orijinal veya arındırılmış görünüm, çok dönemli karşılaştırma
+- **Finansal Tablo Görünümü** — orijinal veya arındırılmış görünüm, çok dönemli karşılaştırma; kalem kodları kalem adının yanında gösterilir
 - **Rasyo Analizi** — çok dönemli rasyo tablosu, hesaplama detayı tooltip'i
+- **AI Yorum** — Gemini AI ile kapsamlı finansal analiz; rasyo dönemleri ve finansal tablo dönemi ayrı ayrı seçilir, tüm rasyolar + arındırma kalemleri + Gelir Tablosu + Bilanço + Nakit Akım verileri birlikte gönderilir
+
+### Rasyo Önerileri
+- **Akıllı filtreleme**: "Rasyo Önerileri" butonu yalnızca henüz eklenmemiş standart rasyoları listeler; zaten kayıtlı olanlar önerilerden çıkarılır
+- Tüm standart rasyolar eklenmiş ise bilgilendirme mesajı gösterilir
 
 ### Formül Editörü
 - Otomatik tamamlama: kalem adı yazılırken canlı filtreleme
@@ -264,6 +271,7 @@ http://localhost:8080/v3/api-docs.yaml   (YAML)
 | | PATCH | `/api/adjustment-rules/{id}/toggle` | Aktif/pasif yap |
 | | DELETE | `/api/adjustment-rules/{id}` | Kural sil |
 | **Analiz** | POST | `/api/analysis` | Analiz çalıştır |
+| | POST | `/api/analysis/interpret` | Gemini AI ile finansal yorum üret |
 
 ---
 
@@ -300,6 +308,7 @@ Veriler `postgres-data` adlı Docker volume'unda kalıcı olarak saklanır.
 | `DB_PASSWORD` | PostgreSQL şifresi | `postgres` |
 | `H2_DATA_PATH` | H2 dosya yolu (profil: h2) | `./data/financial_analysis` |
 | `JAVA_TOOL_OPTIONS` | JVM parametreleri | _(boş)_ |
+| `GEMINI_API_KEY` | Google Gemini API anahtarı (AI Yorum özelliği için zorunlu) | _(boş)_ |
 
 ---
 
