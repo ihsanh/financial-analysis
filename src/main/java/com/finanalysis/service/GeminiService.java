@@ -3,6 +3,7 @@ package com.finanalysis.service;
 import com.finanalysis.config.GeminiProperties;
 import com.finanalysis.dto.InterpretRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GeminiService {
@@ -40,9 +42,19 @@ public class GeminiService {
 
         String url = API_BASE + "/" + props.model() + ":generateContent?key=" + props.apiKey();
 
+        String prompt = buildPrompt(request);
+        System.out.println("=== GEMINI PROMPT (chars=" + prompt.length() + ") ===");
+        System.out.println(prompt);
+        System.out.println("=== END PROMPT ===");
+        log.info("=== GEMINI PROMPT (chars={}) ===\n{}", prompt.length(), prompt);
+
         var body = Map.of(
-                "contents", List.of(Map.of("parts", List.of(Map.of("text", buildPrompt(request))))),
-                "generationConfig", Map.of("temperature", 0.3, "maxOutputTokens", 3000)
+                "contents", List.of(Map.of("parts", List.of(Map.of("text", prompt)))),
+                "generationConfig", Map.of(
+                        "temperature", 0.3,
+                        "maxOutputTokens", 16384,
+                        "thinkingConfig", Map.of("thinkingBudget", 0)
+                )
         );
 
         Map<String, Object> response = callWithRetry(url, body);
@@ -63,7 +75,11 @@ public class GeminiService {
 
         var content = (Map<String, Object>) candidates.get(0).get("content");
         var parts = (List<Map<String, Object>>) content.get("parts");
-        return (String) parts.get(0).get("text");
+        var finishReason = (String) candidates.get(0).get("finishReason");
+        String result = (String) parts.get(0).get("text");
+        System.out.println("=== GEMINI RESPONSE (chars=" + (result != null ? result.length() : 0) + ", finishReason=" + finishReason + ") ===");
+        log.info("Gemini response: chars={}, finishReason={}", result != null ? result.length() : 0, finishReason);
+        return result;
     }
 
     @SuppressWarnings("unchecked")

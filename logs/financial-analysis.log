@@ -295,3 +295,4 @@
 2026-05-20 22:12:46 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
 2026-05-20 22:12:46 INFO  [main] com.finanalysis.FinancialAnalysisApplication - Started FinancialAnalysisApplication in 4.728 seconds (process running for 5.082)
 2026-05-20 22:12:47 INFO  [RMI TCP Connection(2)-127.0.0.1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-20 22:58:36 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=22m52s681ms702µs300ns).

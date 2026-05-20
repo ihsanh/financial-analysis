@@ -30,6 +30,12 @@ const BALANCE_CONFIGS = [
   { label: 'Net Borç',          patterns: ['net borç'] },
   { label: 'Özkaynaklar',       patterns: ['toplam özkaynaklar', 'özkaynaklar', 'özkaynak toplamı'] },
 ]
+const CASH_FLOW_CONFIGS = [
+  { label: 'Esas Faaliyetlerden Net Nakit',        patterns: ['esas faaliyetlerden net nakit', 'esas faaliyetlerden nakit', 'işletme faaliyetleri nakit'] },
+  { label: 'Yatırım Faaliyetlerinden Net Nakit',   patterns: ['yatırım faaliyetlerinden net nakit', 'yatırım faaliyetlerinden nakit'] },
+  { label: 'Finansman Faaliyetlerinden Net Nakit', patterns: ['finansman faaliyetlerinden net nakit', 'finansman faaliyetlerinden nakit'] },
+  { label: 'Dönem Sonu Nakit ve Nakit Benzerleri', patterns: ['dönem sonu nakit ve nakit benzerleri', 'dönem sonu nakit', 'nakit dönem sonu'] },
+]
 
 function findByPatterns(items: FinancialLineItem[], patterns: string[]): number | null {
   const norm = (s: string) => s.toLowerCase().trim()
@@ -61,12 +67,6 @@ const STATEMENT_LABELS: Record<StatementType, string> = {
   TRIAL_BALANCE: 'Mizan',
 }
 
-const CASH_FLOW_CONFIGS = [
-  { label: 'Esas Faaliyetlerden Net Nakit',        patterns: ['esas faaliyetlerden net nakit', 'esas faaliyetlerden nakit', 'işletme faaliyetleri nakit'] },
-  { label: 'Yatırım Faaliyetlerinden Net Nakit',   patterns: ['yatırım faaliyetlerinden net nakit', 'yatırım faaliyetlerinden nakit'] },
-  { label: 'Finansman Faaliyetlerinden Net Nakit', patterns: ['finansman faaliyetlerinden net nakit', 'finansman faaliyetlerinden nakit'] },
-  { label: 'Dönem Sonu Nakit ve Nakit Benzerleri', patterns: ['dönem sonu nakit ve nakit benzerleri', 'dönem sonu nakit', 'nakit dönem sonu'] },
-]
 const CATEGORY_LABELS: Record<string, string> = {
   LIQUIDITY: 'Likidite', LEVERAGE: 'Kaldıraç', PROFITABILITY: 'Karlılık', ACTIVITY: 'Faaliyet', OTHER: 'Diğer'
 }
@@ -126,16 +126,19 @@ export default function AnalysisPage() {
   const [ratioLoading, setRatioLoading] = useState(false)
   const [ratioError, setRatioError] = useState<string | null>(null)
 
-  // ── AI yorum ─────────────────────────────────────────────────────
-  const [aiText, setAiText] = useState<string | null>(null)
-  const [aiLoading, setAiLoading] = useState(false)
-
   // ── summary view ─────────────────────────────────────────────────
   const [summaryPeriod1, setSummaryPeriod1] = useState<string | null>(null)
   const [summaryPeriod2, setSummaryPeriod2] = useState<string | null>(null)
   const [summaryLoading, setSummaryLoading] = useState(false)
   const [incomeRows, setIncomeRows] = useState<SummaryRow[]>([])
   const [balanceRows, setBalanceRows] = useState<SummaryRow[]>([])
+
+  // ── AI yorum ─────────────────────────────────────────────────────
+  const [aiRatioPeriods, setAiRatioPeriods] = useState<string[]>([])
+  const [aiFinPeriod1, setAiFinPeriod1] = useState<string | null>(null)
+  const [aiFinPeriod2, setAiFinPeriod2] = useState<string | null>(null)
+  const [aiText, setAiText] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
 
   const parsePeriod = (p: string) => { const [y, m] = p.split('/').map(Number); return y * 100 + m }
   const periodSort = (a: string, b: string) => parsePeriod(b) - parsePeriod(a)
@@ -151,6 +154,8 @@ export default function AnalysisPage() {
     const periods = [...new Set(allStatements.map(s => s.period))].sort(periodSort)
     setSummaryPeriod1(periods[0] ?? null)
     setSummaryPeriod2(periods[1] ?? null)
+    setAiFinPeriod1(periods[0] ?? null)
+    setAiFinPeriod2(periods[1] ?? null)
     setIncomeRows([]); setBalanceRows([])
   }, [allStatements])
 
@@ -191,6 +196,7 @@ export default function AnalysisPage() {
     setAllStatements([])
     setViewType(null); setViewPeriods([]); setStmtRows([])
     setRatioSelectedPeriods([]); setRatioRows([])
+    setAiRatioPeriods([]); setAiText(null)
     try { setAllStatements(await getStatements(id)) } catch {}
   }
 
@@ -285,7 +291,6 @@ export default function AnalysisPage() {
         }))
 
       const bsBuilt = buildRows(BALANCE_CONFIGS, bsMap)
-      // Calculate Net Borç if not found as a direct line item
       const netDebtRow = bsBuilt.find(r => r.label === 'Net Borç')
       if (netDebtRow) {
         const calcNetDebt = (items: FinancialLineItem[]) => {
@@ -305,11 +310,21 @@ export default function AnalysisPage() {
 
   const stmtColumns: ColumnsType<MultiRow> = [
     {
-      title: 'Kalem', dataIndex: 'name', key: 'name', fixed: 'left', width: 320,
+      title: 'Kalem', dataIndex: 'name', key: 'name', fixed: 'left', width: 340,
       render: (v: string, r: MultiRow) => (
-        <span style={{ paddingLeft: r.level * 16, fontWeight: r.level === 0 ? 600 : 400, display: 'inline-block' }}>
-          {v}
-        </span>
+        <div style={{ paddingLeft: r.level * 16 }}>
+          <span style={{ fontWeight: r.level === 0 ? 600 : 400 }}>{v}</span>
+          {r.code && (
+            <span style={{
+              marginLeft: 6, fontSize: 10, color: '#8c8c8c',
+              background: '#f5f5f5', border: '1px solid #e0e0e0',
+              borderRadius: 3, padding: '0 4px', fontFamily: 'monospace',
+              verticalAlign: 'middle',
+            }}>
+              {r.code}
+            </span>
+          )}
+        </div>
       )
     },
     ...stmtActivePeriods.map(p => ({
@@ -390,23 +405,45 @@ export default function AnalysisPage() {
       }
       setRatioRows([...rowMap.values()])
       setRatioActivePeriods(sortedPeriods)
-      setAiText(null)
     } catch (e: unknown) { setRatioError(String(e)) }
     finally { setRatioLoading(false) }
   }
 
+  // ── AI yorum handler ─────────────────────────────────────────────
   const handleAiInterpret = async () => {
-    if (!selectedCompany || ratioRows.length === 0) return
+    if (!selectedCompany || aiRatioPeriods.length === 0) {
+      message.warning('Rasyo için en az bir dönem seçiniz')
+      return
+    }
     const companyName = companies.find(c => c.id === selectedCompany)?.name ?? ''
     setAiLoading(true)
     setAiText(null)
     try {
-      // 1. Arındırma analizi — tüm kurallar için seçili dönemler
+      const sortedRatioPeriods = [...aiRatioPeriods].sort(periodSort)
+
+      // 1. Tüm rasyoları seçili dönemler için hesapla
+      const ratioAnalyses = await Promise.all(
+        sortedRatioPeriods.map(p => runAnalysis(selectedCompany, p, allRatioIds, []))
+      )
+      const ratioRowMap = new Map<number, { name: string; category?: string; periodValues: Record<string, number | null>; errors: Record<string, string> }>()
+      for (const res of ratioAnalyses) {
+        for (const rr of res.ratioResults) {
+          if (!ratioRowMap.has(rr.ruleId)) {
+            ratioRowMap.set(rr.ruleId, { name: rr.ruleName, category: rr.category, periodValues: {}, errors: {} })
+          }
+          const row = ratioRowMap.get(rr.ruleId)!
+          if (rr.error) row.errors[res.period] = rr.error
+          else row.periodValues[res.period] = rr.value ?? null
+        }
+      }
+      const ratioEntries = Array.from(ratioRowMap.values())
+
+      // 2. Arındırma sonuçları
       const allAdjRuleIds = adjRules.map(r => r.id!).filter(Boolean)
       let adjustmentEntries: { ruleName: string; items: { name: string; value: number | null }[] }[] = []
       if (allAdjRuleIds.length > 0) {
         const adjAnalyses = await Promise.all(
-          ratioActivePeriods.map(p => runAnalysis(selectedCompany, p, [], allAdjRuleIds))
+          sortedRatioPeriods.map(p => runAnalysis(selectedCompany, p, [], allAdjRuleIds))
         )
         const ruleMap = new Map<string, { name: string; value: number | null }[]>()
         for (const result of adjAnalyses) {
@@ -423,35 +460,65 @@ export default function AnalysisPage() {
         adjustmentEntries = Array.from(ruleMap.entries()).map(([ruleName, items]) => ({ ruleName, items }))
       }
 
-      // 2. Özet finansal tablolar
+      // 3. Finansal tablo özeti
       const summaryTables: InterpretSummaryTable[] = []
+      if (aiFinPeriod1) {
+        const finPeriods = [aiFinPeriod1, aiFinPeriod2].filter(Boolean) as string[]
+        const bsStmts = allStatements.filter(s => s.type === 'BALANCE_SHEET' && finPeriods.includes(s.period))
+        const isStmts = allStatements.filter(s => s.type === 'INCOME_STATEMENT' && finPeriods.includes(s.period))
+        const [bsFetched, isFetched] = await Promise.all([
+          Promise.all(bsStmts.map(s => getStatement(s.id))),
+          Promise.all(isStmts.map(s => getStatement(s.id))),
+        ])
+        const bsMap = new Map(bsFetched.map(s => [s.period, s.lineItems]))
+        const isMap = new Map(isFetched.map(s => [s.period, s.lineItems]))
 
-      if (incomeRows.length > 0 && summaryPeriod1) {
-        summaryTables.push({
-          tableType: 'Gelir Tablosu',
-          period1: summaryPeriod1,
-          period2: summaryPeriod2 ?? undefined,
-          items: incomeRows.map(r => ({ label: r.label, val1: r.val1, val2: r.val2 })),
-        })
-      }
-      if (balanceRows.length > 0 && summaryPeriod1) {
-        summaryTables.push({
-          tableType: 'Bilanço',
-          period1: summaryPeriod1,
-          period2: summaryPeriod2 ?? undefined,
-          items: balanceRows.map(r => ({ label: r.label, val1: r.val1, val2: r.val2 })),
-        })
+        if (isFetched.length > 0) {
+          summaryTables.push({
+            tableType: 'Gelir Tablosu',
+            period1: aiFinPeriod1,
+            period2: aiFinPeriod2 ?? undefined,
+            items: INCOME_CONFIGS.map(cfg => ({
+              label: cfg.label,
+              val1: findByPatterns(isMap.get(aiFinPeriod1) ?? [], cfg.patterns),
+              val2: aiFinPeriod2 ? findByPatterns(isMap.get(aiFinPeriod2) ?? [], cfg.patterns) : null,
+            })),
+          })
+        }
+        if (bsFetched.length > 0) {
+          const bsItems = BALANCE_CONFIGS.map(cfg => ({
+            label: cfg.label,
+            val1: findByPatterns(bsMap.get(aiFinPeriod1) ?? [], cfg.patterns),
+            val2: aiFinPeriod2 ? findByPatterns(bsMap.get(aiFinPeriod2) ?? [], cfg.patterns) : null,
+          }))
+          const netDebt = bsItems.find(r => r.label === 'Net Borç')
+          if (netDebt) {
+            const calcNetDebt = (items: FinancialLineItem[]) => {
+              const debt = findByPatterns(items, ['toplam finansal borç', 'finansal borç'])
+              const cash = findByPatterns(items, ['nakit ve nakit benzerleri', 'nakit', 'hazır değerler'])
+              return debt != null ? (cash != null ? debt - cash : debt) : null
+            }
+            if (netDebt.val1 == null) netDebt.val1 = calcNetDebt(bsMap.get(aiFinPeriod1) ?? [])
+            if (netDebt.val2 == null && aiFinPeriod2) netDebt.val2 = calcNetDebt(bsMap.get(aiFinPeriod2) ?? [])
+          }
+          summaryTables.push({
+            tableType: 'Bilanço',
+            period1: aiFinPeriod1,
+            period2: aiFinPeriod2 ?? undefined,
+            items: bsItems,
+          })
+        }
       }
 
-      // 3. Nakit akım tablosu — varsa dönemler için çek
+      // 4. Nakit akım tablosu
       const cfStmts = allStatements.filter(
-        s => s.type === 'CASH_FLOW' && ratioActivePeriods.includes(s.period)
+        s => s.type === 'CASH_FLOW' && sortedRatioPeriods.includes(s.period)
       )
       if (cfStmts.length > 0) {
         const cfFetched = await Promise.all(cfStmts.map(s => getStatement(s.id)))
         const cfMap = new Map(cfFetched.map(s => [s.period, s.lineItems]))
-        const p1 = ratioActivePeriods[0]
-        const p2 = ratioActivePeriods[1] ?? null
+        const p1 = sortedRatioPeriods[0]
+        const p2 = sortedRatioPeriods[1] ?? null
         summaryTables.push({
           tableType: 'Nakit Akım Tablosu',
           period1: p1,
@@ -466,13 +533,8 @@ export default function AnalysisPage() {
 
       const res = await interpretAnalysis({
         companyName,
-        periods: ratioActivePeriods,
-        ratioRows: ratioRows.map(r => ({
-          name: r.ratioName,
-          category: r.category,
-          periodValues: r.periodValues,
-          errors: r.periodErrors,
-        })),
+        periods: sortedRatioPeriods,
+        ratioRows: ratioEntries,
         adjustmentRows: adjustmentEntries.length > 0 ? adjustmentEntries : undefined,
         summaryTables: summaryTables.length > 0 ? summaryTables : undefined,
       })
@@ -607,63 +669,10 @@ export default function AnalysisPage() {
       {ratioError && <Alert type="error" message={ratioError} style={{ marginBottom: 12 }} />}
 
       {ratioRows.length > 0 && (
-        <>
-          <Table<MultiRatioRow>
-            rowKey="key" size="small" columns={ratioColumns} dataSource={ratioRows}
-            pagination={false} scroll={{ x: 310 + ratioActivePeriods.length * 120, y: 500 }}
-          />
-
-          {/* ── AI Yorum ──────────────────────────────────────────── */}
-          <div style={{ marginTop: 20, borderTop: '1px solid #f0f0f0', paddingTop: 16 }}>
-            <Button
-              icon={<RobotOutlined />}
-              type="default"
-              loading={aiLoading}
-              onClick={handleAiInterpret}
-              style={{ marginBottom: aiText ? 16 : 0 }}
-            >
-              AI Finansal Yorumu Al
-            </Button>
-
-            {aiLoading && (
-              <div style={{ marginTop: 16, textAlign: 'center', color: '#8c8c8c' }}>
-                <Spin size="small" style={{ marginRight: 8 }} />
-                Gemini analiz yapıyor…
-              </div>
-            )}
-
-            {aiText && (
-              <Card
-                size="small"
-                style={{ background: '#fafafa', border: '1px solid #e8e8e8' }}
-                title={
-                  <span style={{ color: '#1677ff' }}>
-                    <RobotOutlined style={{ marginRight: 6 }} />
-                    AI Finansal Yorumu
-                  </span>
-                }
-                extra={
-                  <Space>
-                    <Button
-                      size="small"
-                      icon={<CopyOutlined />}
-                      onClick={() => { navigator.clipboard.writeText(aiText); message.success('Kopyalandı') }}
-                    >
-                      Kopyala
-                    </Button>
-                    <Button size="small" onClick={() => setAiText(null)}>Kapat</Button>
-                  </Space>
-                }
-              >
-                <Typography.Paragraph
-                  style={{ whiteSpace: 'pre-wrap', marginBottom: 0, lineHeight: 1.8, fontSize: 13 }}
-                >
-                  {aiText}
-                </Typography.Paragraph>
-              </Card>
-            )}
-          </div>
-        </>
+        <Table<MultiRatioRow>
+          rowKey="key" size="small" columns={ratioColumns} dataSource={ratioRows}
+          pagination={false} scroll={{ x: 310 + ratioActivePeriods.length * 120, y: 500 }}
+        />
       )}
     </Card>
   )
@@ -753,6 +762,122 @@ export default function AnalysisPage() {
     </Card>
   )
 
+  const aiTab = (
+    <Card size="small">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+        {/* Rasyo dönemi */}
+        <div style={{ background: '#f9fafb', border: '1px solid #e8e8e8', borderRadius: 8, padding: 16 }}>
+          <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 10, color: '#262626' }}>
+            Rasyo Analizi Dönemleri
+          </div>
+          <Space wrap>
+            <Select
+              mode="multiple"
+              style={{ minWidth: 300 }}
+              placeholder="Dönem seçin (rasyolar otomatik hesaplanır)"
+              options={ratioPeriodOptions.map(p => ({ value: p, label: p }))}
+              value={aiRatioPeriods}
+              onChange={setAiRatioPeriods}
+              disabled={!selectedCompany}
+              maxTagCount="responsive"
+            />
+            <Button
+              disabled={!selectedCompany || ratioAnnualPeriods.length === 0}
+              onClick={() => setAiRatioPeriods(ratioAnnualPeriods)}
+            >
+              Yıllık ({ratioAnnualPeriods.length})
+            </Button>
+          </Space>
+          <div style={{ marginTop: 6, fontSize: 12, color: '#8c8c8c' }}>
+            Tüm rasyo kuralları ve arındırma kuralları bu dönemler için otomatik çalıştırılır.
+          </div>
+        </div>
+
+        {/* Finansal tablo dönemi */}
+        <div style={{ background: '#f9fafb', border: '1px solid #e8e8e8', borderRadius: 8, padding: 16 }}>
+          <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 10, color: '#262626' }}>
+            Finansal Tablo Dönemi (Gelir Tablosu + Bilanço)
+          </div>
+          <Space wrap>
+            <Select
+              style={{ width: 150 }}
+              placeholder="Dönem 1"
+              options={ratioPeriodOptions.map(p => ({ value: p, label: p }))}
+              value={aiFinPeriod1}
+              onChange={setAiFinPeriod1}
+              disabled={!selectedCompany}
+            />
+            <Select
+              style={{ width: 170 }}
+              placeholder="Karşılaştırma dönemi"
+              options={ratioPeriodOptions.map(p => ({ value: p, label: p }))}
+              value={aiFinPeriod2}
+              onChange={v => setAiFinPeriod2(v ?? null)}
+              allowClear
+              disabled={!selectedCompany}
+            />
+          </Space>
+          <div style={{ marginTop: 6, fontSize: 12, color: '#8c8c8c' }}>
+            Nakit akım tablosu varsa rasyo dönemlerinden otomatik eklenir.
+          </div>
+        </div>
+
+        {/* Yorum butonu */}
+        <div>
+          <Button
+            type="primary"
+            size="large"
+            icon={<RobotOutlined />}
+            loading={aiLoading}
+            disabled={!selectedCompany || aiRatioPeriods.length === 0}
+            onClick={handleAiInterpret}
+          >
+            AI Finansal Yorumu Al
+          </Button>
+        </div>
+
+        {aiLoading && (
+          <div style={{ textAlign: 'center', color: '#8c8c8c', padding: 24 }}>
+            <Spin size="small" style={{ marginRight: 8 }} />
+            Gemini tüm veriler üzerinde analiz yapıyor…
+          </div>
+        )}
+
+        {aiText && (
+          <Card
+            size="small"
+            style={{ background: '#fafafa', border: '1px solid #e8e8e8' }}
+            title={
+              <span style={{ color: '#1677ff' }}>
+                <RobotOutlined style={{ marginRight: 6 }} />
+                AI Finansal Yorumu
+              </span>
+            }
+            extra={
+              <Space>
+                <Button
+                  size="small"
+                  icon={<CopyOutlined />}
+                  onClick={() => { navigator.clipboard.writeText(aiText); message.success('Kopyalandı') }}
+                >
+                  Kopyala
+                </Button>
+                <Button size="small" onClick={() => setAiText(null)}>Kapat</Button>
+              </Space>
+            }
+          >
+            <Typography.Paragraph
+              style={{ whiteSpace: 'pre-wrap', marginBottom: 0, lineHeight: 1.8, fontSize: 13 }}
+            >
+              {aiText}
+            </Typography.Paragraph>
+          </Card>
+        )}
+      </div>
+    </Card>
+  )
+
   return (
     <>
       <Title level={4} style={{ marginTop: 0 }}>Analiz</Title>
@@ -768,9 +893,10 @@ export default function AnalysisPage() {
       </div>
 
       <Tabs items={[
-        { key: 'summary', label: 'Özet Finansallar', children: summaryTab },
+        { key: 'summary',    label: 'Özet Finansallar',        children: summaryTab },
         { key: 'statements', label: 'Finansal Tablo Görünümü', children: stmtTab },
-        { key: 'ratios', label: 'Rasyo Analizi', children: ratioTab },
+        { key: 'ratios',     label: 'Rasyo Analizi',           children: ratioTab },
+        { key: 'ai',         label: <span><RobotOutlined style={{ marginRight: 4 }} />AI Yorum</span>, children: aiTab },
       ]} />
     </>
   )

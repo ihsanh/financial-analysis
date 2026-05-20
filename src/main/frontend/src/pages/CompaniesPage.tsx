@@ -97,8 +97,18 @@ export default function CompaniesPage() {
           <Form.Item name="name" label="Firma Adı" rules={[{ required: true, message: 'Zorunlu alan' }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="taxNumber" label="Vergi No">
-            <Input />
+          <Form.Item
+            name="taxNumber"
+            label="Vergi No"
+            rules={[
+              { pattern: /^\d{10}$/, message: 'Vergi no 10 haneli rakamdan oluşmalıdır' },
+            ]}
+          >
+            <Input
+              maxLength={10}
+              onKeyPress={e => { if (!/\d/.test(e.key)) e.preventDefault() }}
+              placeholder="10 haneli vergi numarası"
+            />
           </Form.Item>
           <Form.Item name="sector" label="Sektör">
             <Input />

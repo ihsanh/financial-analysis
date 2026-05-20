@@ -397,8 +397,14 @@ export default function RatioRulesPage() {
       message.info('Yüklü kalemler arasında eşleşen standart rasyo bulunamadı.')
       return
     }
-    setSuggestions(s)
-    setSelectedKeys(s.map(r => r.key))
+    const existingNames = new Set(rules.map(r => r.name.toLowerCase().trim()))
+    const newOnly = s.filter(sug => !existingNames.has(sug.name.toLowerCase().trim()))
+    if (newOnly.length === 0) {
+      message.success('Tüm standart rasyolar zaten eklenmiş.')
+      return
+    }
+    setSuggestions(newOnly)
+    setSelectedKeys(newOnly.map(r => r.key))
     setSuggestOpen(true)
   }
 
@@ -616,7 +622,7 @@ export default function RatioRulesPage() {
 
       {/* Rasyo öneri modal */}
       <Modal
-        title={`Standart Rasyo Önerileri — ${suggestions.length} rasyo eşleşti`}
+        title={`Standart Rasyo Önerileri — ${suggestions.length} yeni rasyo`}
         open={suggestOpen}
         onCancel={() => setSuggestOpen(false)}
         width={820}
