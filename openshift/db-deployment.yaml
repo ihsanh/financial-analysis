@@ -1,0 +1,83 @@
+# PostgreSQL profili kullanmak istiyorsanız bu dosyayı da uygulayın
+# Üretim ortamında OpenShift'in kendi PostgreSQL template'ini tercih edin:
+#   oc new-app postgresql-persistent -p POSTGRESQL_DATABASE=financial_analysis
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: financial-analysis-db-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: financial-analysis-db
+  labels:
+    app: financial-analysis-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: financial-analysis-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: financial-analysis-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: financial_analysis
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: financial-analysis-db-secret
+                  key: db-username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: financial-analysis-db-secret
+                  key: db-password
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "postgres", "-d", "financial_analysis"]
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: financial-analysis-db-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: financial-analysis-db
+  labels:
+    app: financial-analysis-db
+spec:
+  selector:
+    app: financial-analysis-db
+  ports:
+    - port: 5432
+      targetPort: 5432

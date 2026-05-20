@@ -1,0 +1,13 @@
+# H2 profili için kalıcı depolama (veri kaybolmaması için gerekli)
+# PostgreSQL profili kullanıyorsanız bu dosyaya gerek yok
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: financial-analysis-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  # StorageClass belirtmek için: storageClassName: standard

@@ -1,0 +1,19 @@
+# OpenShift Route — dışarıdan erişim için (Kubernetes Ingress yerine)
+# HOST otomatik atanır; özel domain için spec.host alanını ekleyin
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: financial-analysis
+  labels:
+    app: financial-analysis
+spec:
+  to:
+    kind: Service
+    name: financial-analysis
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  # Özel hostname için:
+  # host: finanalysis.apps.cluster.example.com

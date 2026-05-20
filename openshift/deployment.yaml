@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: financial-analysis
+  labels:
+    app: financial-analysis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: financial-analysis
+  strategy:
+    type: Recreate   # H2 dosya tabanlı DB tek pod gerektirir; PostgreSQL için RollingUpdate kullanın
+  template:
+    metadata:
+      labels:
+        app: financial-analysis
+    spec:
+      containers:
+        - name: financial-analysis
+          # image: değerini kendi registry adresinizle değiştirin
+          # Örnek: quay.io/kullaniciadiniz/financial-analysis:latest
+          #         docker.io/kullaniciadiniz/financial-analysis:latest
+          image: financial-analysis:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
+          env:
+            # ── H2 profili (varsayılan) ─────────────────────────────────
+            - name: SPRING_PROFILES_ACTIVE
+              value: "h2"
+            - name: H2_DATA_PATH
+              value: "/app/data/financial_analysis"
+
+            # ── PostgreSQL profili için üstteki iki satırı kaldırın,
+            #    aşağıdaki bloğun yorumunu açın ve secret.yaml uygulayın ──
+            # - name: SPRING_PROFILES_ACTIVE
+            #   value: "postgres"
+            # - name: DB_URL
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: financial-analysis-db-secret
+            #       key: db-url
+            # - name: DB_USERNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: financial-analysis-db-secret
+            #       key: db-username
+            # - name: DB_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: financial-analysis-db-secret
+            #       key: db-password
+
+            # ── JVM bellek ayarı ─────────────────────────────────────────
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Xmx512m"
+
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: logs
+              mountPath: /app/logs
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 3
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: financial-analysis-data
+        - name: logs
+          emptyDir: {}

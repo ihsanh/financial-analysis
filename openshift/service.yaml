@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: financial-analysis
+  labels:
+    app: financial-analysis
+spec:
+  selector:
+    app: financial-analysis
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP

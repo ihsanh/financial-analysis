@@ -1,0 +1,32 @@
+# Build çıktıları
+target/
+src/main/frontend/dist/
+src/main/frontend/node_modules/
+
+# Veriler ve loglar
+data/
+logs/
+*.log
+
+# IDE ve OS dosyaları
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# OpenShift manifests
+openshift/
+
+# Test coverage
+.nyc_output/
+coverage/
