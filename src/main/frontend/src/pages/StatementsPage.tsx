@@ -16,6 +16,7 @@ const { Title, Text } = Typography
 const STATEMENT_LABELS: Record<StatementType, string> = {
   BALANCE_SHEET: 'Bilanço',
   INCOME_STATEMENT: 'Gelir Tablosu',
+  CASH_FLOW: 'Nakit Akım Tablosu',
   TRIAL_BALANCE: 'Mizan',
 }
 
@@ -106,9 +107,10 @@ export default function StatementsPage() {
         </Text>
         <Form form={form} layout="inline">
           <Form.Item name="type" label="Tür" rules={[{ required: true }]}>
-            <Select style={{ width: 180 }} options={[
+            <Select style={{ width: 200 }} options={[
               { value: 'BALANCE_SHEET', label: 'Bilanço' },
               { value: 'INCOME_STATEMENT', label: 'Gelir Tablosu' },
+              { value: 'CASH_FLOW', label: 'Nakit Akım Tablosu' },
               { value: 'TRIAL_BALANCE', label: 'Mizan' },
             ]} />
           </Form.Item>
@@ -126,10 +128,11 @@ export default function StatementsPage() {
 
       <Card size="small" title="Yüklü Tablolar">
         <Space style={{ marginBottom: 10 }}>
-          <Select allowClear style={{ width: 180 }} placeholder="Tür filtrele"
+          <Select allowClear style={{ width: 200 }} placeholder="Tür filtrele"
             options={[
               { value: 'BALANCE_SHEET', label: 'Bilanço' },
               { value: 'INCOME_STATEMENT', label: 'Gelir Tablosu' },
+              { value: 'CASH_FLOW', label: 'Nakit Akım Tablosu' },
               { value: 'TRIAL_BALANCE', label: 'Mizan' },
             ]}
             value={filterType} onChange={v => { setFilterType(v ?? null); setFilterPeriod(null) }} />

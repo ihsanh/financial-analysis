@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
   Select, Button, Checkbox, Table, Tag, Alert, Typography,
-  Empty, Tooltip, Segmented, Space, message, Card, Tabs
+  Empty, Tooltip, Segmented, Space, message, Card, Tabs, Spin,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined } from '@ant-design/icons'
+import { EyeOutlined, RobotOutlined, CopyOutlined } from '@ant-design/icons'
 import {
   getCompanies, getRatioRules, getAdjustmentRules, runAnalysis,
-  getStatements, getStatement, getItemDefs
+  getStatements, getStatement, getItemDefs, interpretAnalysis,
 } from '../api/client'
-import type { Company, RatioRule, AdjustmentRule, FinancialStatement, FinancialItemDef, FinancialLineItem, StatementType } from '../types'
+import type { Company, RatioRule, AdjustmentRule, FinancialStatement, FinancialItemDef, FinancialLineItem, StatementType, InterpretSummaryTable } from '../types'
 
 const { Title, Text } = Typography
 
@@ -57,8 +57,16 @@ const fmtSummary = (v: number | null | undefined) =>
 const STATEMENT_LABELS: Record<StatementType, string> = {
   BALANCE_SHEET: 'Bilanço',
   INCOME_STATEMENT: 'Gelir Tablosu',
+  CASH_FLOW: 'Nakit Akım Tablosu',
   TRIAL_BALANCE: 'Mizan',
 }
+
+const CASH_FLOW_CONFIGS = [
+  { label: 'Esas Faaliyetlerden Net Nakit',        patterns: ['esas faaliyetlerden net nakit', 'esas faaliyetlerden nakit', 'işletme faaliyetleri nakit'] },
+  { label: 'Yatırım Faaliyetlerinden Net Nakit',   patterns: ['yatırım faaliyetlerinden net nakit', 'yatırım faaliyetlerinden nakit'] },
+  { label: 'Finansman Faaliyetlerinden Net Nakit', patterns: ['finansman faaliyetlerinden net nakit', 'finansman faaliyetlerinden nakit'] },
+  { label: 'Dönem Sonu Nakit ve Nakit Benzerleri', patterns: ['dönem sonu nakit ve nakit benzerleri', 'dönem sonu nakit', 'nakit dönem sonu'] },
+]
 const CATEGORY_LABELS: Record<string, string> = {
   LIQUIDITY: 'Likidite', LEVERAGE: 'Kaldıraç', PROFITABILITY: 'Karlılık', ACTIVITY: 'Faaliyet', OTHER: 'Diğer'
 }
@@ -117,6 +125,10 @@ export default function AnalysisPage() {
   const [ratioActivePeriods, setRatioActivePeriods] = useState<string[]>([])
   const [ratioLoading, setRatioLoading] = useState(false)
   const [ratioError, setRatioError] = useState<string | null>(null)
+
+  // ── AI yorum ─────────────────────────────────────────────────────
+  const [aiText, setAiText] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
 
   // ── summary view ─────────────────────────────────────────────────
   const [summaryPeriod1, setSummaryPeriod1] = useState<string | null>(null)
@@ -378,8 +390,95 @@ export default function AnalysisPage() {
       }
       setRatioRows([...rowMap.values()])
       setRatioActivePeriods(sortedPeriods)
+      setAiText(null)
     } catch (e: unknown) { setRatioError(String(e)) }
     finally { setRatioLoading(false) }
+  }
+
+  const handleAiInterpret = async () => {
+    if (!selectedCompany || ratioRows.length === 0) return
+    const companyName = companies.find(c => c.id === selectedCompany)?.name ?? ''
+    setAiLoading(true)
+    setAiText(null)
+    try {
+      // 1. Arındırma analizi — tüm kurallar için seçili dönemler
+      const allAdjRuleIds = adjRules.map(r => r.id!).filter(Boolean)
+      let adjustmentEntries: { ruleName: string; items: { name: string; value: number | null }[] }[] = []
+      if (allAdjRuleIds.length > 0) {
+        const adjAnalyses = await Promise.all(
+          ratioActivePeriods.map(p => runAnalysis(selectedCompany, p, [], allAdjRuleIds))
+        )
+        const ruleMap = new Map<string, { name: string; value: number | null }[]>()
+        for (const result of adjAnalyses) {
+          for (const adjResult of result.adjustmentResults) {
+            if (!ruleMap.has(adjResult.ruleName)) ruleMap.set(adjResult.ruleName, [])
+            for (const item of adjResult.adjustedItems) {
+              ruleMap.get(adjResult.ruleName)!.push({
+                name: `${item.name} (${result.period})`,
+                value: item.value ?? null,
+              })
+            }
+          }
+        }
+        adjustmentEntries = Array.from(ruleMap.entries()).map(([ruleName, items]) => ({ ruleName, items }))
+      }
+
+      // 2. Özet finansal tablolar
+      const summaryTables: InterpretSummaryTable[] = []
+
+      if (incomeRows.length > 0 && summaryPeriod1) {
+        summaryTables.push({
+          tableType: 'Gelir Tablosu',
+          period1: summaryPeriod1,
+          period2: summaryPeriod2 ?? undefined,
+          items: incomeRows.map(r => ({ label: r.label, val1: r.val1, val2: r.val2 })),
+        })
+      }
+      if (balanceRows.length > 0 && summaryPeriod1) {
+        summaryTables.push({
+          tableType: 'Bilanço',
+          period1: summaryPeriod1,
+          period2: summaryPeriod2 ?? undefined,
+          items: balanceRows.map(r => ({ label: r.label, val1: r.val1, val2: r.val2 })),
+        })
+      }
+
+      // 3. Nakit akım tablosu — varsa dönemler için çek
+      const cfStmts = allStatements.filter(
+        s => s.type === 'CASH_FLOW' && ratioActivePeriods.includes(s.period)
+      )
+      if (cfStmts.length > 0) {
+        const cfFetched = await Promise.all(cfStmts.map(s => getStatement(s.id)))
+        const cfMap = new Map(cfFetched.map(s => [s.period, s.lineItems]))
+        const p1 = ratioActivePeriods[0]
+        const p2 = ratioActivePeriods[1] ?? null
+        summaryTables.push({
+          tableType: 'Nakit Akım Tablosu',
+          period1: p1,
+          period2: p2 ?? undefined,
+          items: CASH_FLOW_CONFIGS.map(cfg => ({
+            label: cfg.label,
+            val1: findByPatterns(cfMap.get(p1) ?? [], cfg.patterns),
+            val2: p2 ? findByPatterns(cfMap.get(p2) ?? [], cfg.patterns) : null,
+          })),
+        })
+      }
+
+      const res = await interpretAnalysis({
+        companyName,
+        periods: ratioActivePeriods,
+        ratioRows: ratioRows.map(r => ({
+          name: r.ratioName,
+          category: r.category,
+          periodValues: r.periodValues,
+          errors: r.periodErrors,
+        })),
+        adjustmentRows: adjustmentEntries.length > 0 ? adjustmentEntries : undefined,
+        summaryTables: summaryTables.length > 0 ? summaryTables : undefined,
+      })
+      setAiText(res.interpretation)
+    } catch (e: unknown) { message.error(String(e)) }
+    finally { setAiLoading(false) }
   }
 
   const ratioColumns: ColumnsType<MultiRatioRow> = [
@@ -508,10 +607,63 @@ export default function AnalysisPage() {
       {ratioError && <Alert type="error" message={ratioError} style={{ marginBottom: 12 }} />}
 
       {ratioRows.length > 0 && (
-        <Table<MultiRatioRow>
-          rowKey="key" size="small" columns={ratioColumns} dataSource={ratioRows}
-          pagination={false} scroll={{ x: 310 + ratioActivePeriods.length * 120, y: 500 }}
-        />
+        <>
+          <Table<MultiRatioRow>
+            rowKey="key" size="small" columns={ratioColumns} dataSource={ratioRows}
+            pagination={false} scroll={{ x: 310 + ratioActivePeriods.length * 120, y: 500 }}
+          />
+
+          {/* ── AI Yorum ──────────────────────────────────────────── */}
+          <div style={{ marginTop: 20, borderTop: '1px solid #f0f0f0', paddingTop: 16 }}>
+            <Button
+              icon={<RobotOutlined />}
+              type="default"
+              loading={aiLoading}
+              onClick={handleAiInterpret}
+              style={{ marginBottom: aiText ? 16 : 0 }}
+            >
+              AI Finansal Yorumu Al
+            </Button>
+
+            {aiLoading && (
+              <div style={{ marginTop: 16, textAlign: 'center', color: '#8c8c8c' }}>
+                <Spin size="small" style={{ marginRight: 8 }} />
+                Gemini analiz yapıyor…
+              </div>
+            )}
+
+            {aiText && (
+              <Card
+                size="small"
+                style={{ background: '#fafafa', border: '1px solid #e8e8e8' }}
+                title={
+                  <span style={{ color: '#1677ff' }}>
+                    <RobotOutlined style={{ marginRight: 6 }} />
+                    AI Finansal Yorumu
+                  </span>
+                }
+                extra={
+                  <Space>
+                    <Button
+                      size="small"
+                      icon={<CopyOutlined />}
+                      onClick={() => { navigator.clipboard.writeText(aiText); message.success('Kopyalandı') }}
+                    >
+                      Kopyala
+                    </Button>
+                    <Button size="small" onClick={() => setAiText(null)}>Kapat</Button>
+                  </Space>
+                }
+              >
+                <Typography.Paragraph
+                  style={{ whiteSpace: 'pre-wrap', marginBottom: 0, lineHeight: 1.8, fontSize: 13 }}
+                >
+                  {aiText}
+                </Typography.Paragraph>
+              </Card>
+            )}
+          </div>
+        </>
       )}
     </Card>
   )

@@ -1,4 +1,4 @@
-export type StatementType = 'BALANCE_SHEET' | 'INCOME_STATEMENT' | 'TRIAL_BALANCE'
+export type StatementType = 'BALANCE_SHEET' | 'INCOME_STATEMENT' | 'CASH_FLOW' | 'TRIAL_BALANCE'
 
 export interface FinancialItemDef {
   id: number
@@ -91,6 +91,43 @@ export interface AdjustmentResult {
   ruleName: string
   adjustedItems: FinancialLineItem[]
   errors: Record<string, string>
+}
+
+export interface InterpretRatioEntry {
+  name: string
+  category?: string
+  periodValues: Record<string, number | null>
+  errors: Record<string, string>
+}
+
+export interface InterpretAdjustmentEntry {
+  ruleName: string
+  items: Array<{ name: string; value: number | null }>
+}
+
+export interface InterpretSummaryItem {
+  label: string
+  val1: number | null
+  val2: number | null
+}
+
+export interface InterpretSummaryTable {
+  tableType: string
+  period1: string
+  period2?: string | null
+  items: InterpretSummaryItem[]
+}
+
+export interface InterpretRequest {
+  companyName: string
+  periods: string[]
+  ratioRows: InterpretRatioEntry[]
+  adjustmentRows?: InterpretAdjustmentEntry[]
+  summaryTables?: InterpretSummaryTable[]
+}
+
+export interface InterpretResponse {
+  interpretation: string
 }
 
 export interface AnalysisResponse {

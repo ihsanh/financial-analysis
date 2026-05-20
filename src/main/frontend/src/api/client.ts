@@ -1,7 +1,8 @@
 import axios from 'axios'
 import type {
   Company, FinancialStatement, RatioRule, AdjustmentRule,
-  StatementType, AnalysisResponse, FinancialItemDef
+  StatementType, AnalysisResponse, FinancialItemDef,
+  InterpretRequest, InterpretResponse,
 } from '../types'
 
 const api = axios.create({ baseURL: '/api' })
@@ -69,3 +70,6 @@ export const deleteAdjustmentRule = (id: number) => api.delete(`/adjustment-rule
 // Analysis
 export const runAnalysis = (companyId: number, period: string, ratioRuleIds: number[], adjustmentRuleIds: number[]) =>
   api.post<AnalysisResponse>('/analysis', { companyId, period, ratioRuleIds, adjustmentRuleIds }).then(r => r.data)
+
+export const interpretAnalysis = (data: InterpretRequest) =>
+  api.post<InterpretResponse>('/analysis/interpret', data).then(r => r.data)

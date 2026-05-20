@@ -28,6 +28,7 @@ C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\dto\FinancialLi
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\model\FinancialItemDef.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\controller\StatementController.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\repository\FinancialLineItemRepository.java
+C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\service\GeminiService.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\repository\AdjustmentRuleRepository.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\controller\AnalysisController.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\controller\FinancialItemDefController.java
@@ -37,8 +38,11 @@ C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\dto\FinancialSt
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\model\Company.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\repository\FinancialItemDefRepository.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\controller\CompanyController.java
+C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\dto\InterpretRequestDto.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\dto\AdjustmentStepDto.java
+C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\config\GeminiProperties.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\FinancialAnalysisApplication.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\dto\RatioRuleDto.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\controller\GlobalExceptionHandler.java
+C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\dto\InterpretResponseDto.java
 C:\Users\Gaming\financial-analysis\src\main\java\com\finanalysis\parser\ExcelStatementParser.java

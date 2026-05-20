@@ -55,6 +55,7 @@ const validateFormula = (_: unknown, value: string): Promise<void> => {
 const STATEMENT_OPTIONS = [
   { value: 'BALANCE_SHEET', label: 'Bilanço' },
   { value: 'INCOME_STATEMENT', label: 'Gelir Tablosu' },
+  { value: 'CASH_FLOW', label: 'Nakit Akım Tablosu' },
   { value: 'TRIAL_BALANCE', label: 'Mizan' },
 ]
 
@@ -360,6 +361,7 @@ export default function AdjustmentRulesPage() {
           options={[
             { value: 'BALANCE_SHEET', label: 'Bilanço' },
             { value: 'INCOME_STATEMENT', label: 'Gelir Tablosu' },
+            { value: 'CASH_FLOW', label: 'Nakit Akım Tablosu' },
             { value: 'TRIAL_BALANCE', label: 'Mizan' },
           ]}
         />
@@ -390,8 +392,8 @@ export default function AdjustmentRulesPage() {
               {
                 title: 'Tablo', dataIndex: 'statementType', key: 'statementType', width: 110,
                 render: (v: string) => {
-                  const labels: Record<string, string> = { BALANCE_SHEET: 'Bilanço', INCOME_STATEMENT: 'Gelir Tab.', TRIAL_BALANCE: 'Mizan' }
-                  const colors: Record<string, string> = { BALANCE_SHEET: 'blue', INCOME_STATEMENT: 'green', TRIAL_BALANCE: 'orange' }
+                  const labels: Record<string, string> = { BALANCE_SHEET: 'Bilanço', INCOME_STATEMENT: 'Gelir Tab.', CASH_FLOW: 'Nakit Akım', TRIAL_BALANCE: 'Mizan' }
+                  const colors: Record<string, string> = { BALANCE_SHEET: 'blue', INCOME_STATEMENT: 'green', CASH_FLOW: 'cyan', TRIAL_BALANCE: 'orange' }
                   return v ? <Tag color={colors[v]} style={{ fontSize: 11 }}>{labels[v] ?? v}</Tag> : '-'
                 },
               },

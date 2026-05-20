@@ -54,6 +54,15 @@ spec:
             #       name: financial-analysis-db-secret
             #       key: db-password
 
+            # ── Gemini AI yorum (isteğe bağlı) ──────────────────────────
+            # Secret oluşturun: oc create secret generic gemini-secret --from-literal=api-key=<ANAHTARINIZ>
+            # Aşağıdaki bloğun yorumunu açın:
+            # - name: GEMINI_API_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: gemini-secret
+            #       key: api-key
+
             # ── JVM bellek ayarı ─────────────────────────────────────────
             - name: JAVA_TOOL_OPTIONS
               value: "-Xmx512m"

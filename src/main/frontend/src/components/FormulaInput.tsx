@@ -5,11 +5,13 @@ import type { FinancialItemDef } from '../types'
 const STMT_LABELS: Record<string, string> = {
   BALANCE_SHEET: 'Bilanço',
   INCOME_STATEMENT: 'Gelir Tab.',
+  CASH_FLOW: 'Nakit Akım',
   TRIAL_BALANCE: 'Mizan',
 }
 const STMT_COLORS: Record<string, string> = {
   BALANCE_SHEET: 'blue',
   INCOME_STATEMENT: 'green',
+  CASH_FLOW: 'cyan',
   TRIAL_BALANCE: 'orange',
 }
 
