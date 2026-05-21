@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
   Select, Button, Checkbox, Table, Tag, Alert, Typography,
-  Empty, Tooltip, Segmented, Space, message, Card, Tabs, Spin,
+  Empty, Tooltip, Segmented, Space, message, Card, Tabs, Spin, Modal,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, RobotOutlined, CopyOutlined } from '@ant-design/icons'
+import { EyeOutlined, RobotOutlined, CopyOutlined, BarChartOutlined } from '@ant-design/icons'
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip as ChartTooltip, Cell, ResponsiveContainer, Legend,
+} from 'recharts'
 import {
   getCompanies, getRatioRules, getAdjustmentRules, runAnalysis,
   getStatements, getStatement, getItemDefs, interpretAnalysis,
@@ -90,6 +94,14 @@ interface SummaryRow {
   val2: number | null
 }
 
+interface SectorEntry {
+  companyId: number
+  companyName: string
+  ratioValues: Record<string, number | null> // `${ratioId}|${period}` → value
+}
+
+const PERIOD_COLORS = ['#1677ff', '#52c41a', '#fa8c16', '#722ed1', '#eb2f96']
+
 interface MultiRatioRow {
   key: string
   ratioId: number
@@ -125,6 +137,12 @@ export default function AnalysisPage() {
   const [ratioActivePeriods, setRatioActivePeriods] = useState<string[]>([])
   const [ratioLoading, setRatioLoading] = useState(false)
   const [ratioError, setRatioError] = useState<string | null>(null)
+
+  // ── sektör karşılaştırma ─────────────────────────────────────────
+  const [sectorOpen, setSectorOpen] = useState(false)
+  const [sectorLoading, setSectorLoading] = useState(false)
+  const [sectorEntries, setSectorEntries] = useState<SectorEntry[]>([])
+  const [sectorRatioId, setSectorRatioId] = useState<number | null>(null)
 
   // ── summary view ─────────────────────────────────────────────────
   const [summaryPeriod1, setSummaryPeriod1] = useState<string | null>(null)
@@ -409,6 +427,48 @@ export default function AnalysisPage() {
     finally { setRatioLoading(false) }
   }
 
+  // ── sektör karşılaştırma handler ────────────────────────────────
+  const handleSectorCompare = async () => {
+    const currentCompany = companies.find(c => c.id === selectedCompany)
+    if (!currentCompany || ratioSelectedIds.length === 0 || ratioActivePeriods.length === 0) return
+
+    const sector = currentCompany.sector?.trim()
+    const peers = sector
+      ? companies.filter(c => c.sector?.trim() === sector)
+      : companies
+
+    if (peers.length <= 1) {
+      message.info(sector
+        ? `"${sector}" sektöründe başka firma tanımlı değil`
+        : 'Sistemde karşılaştırılacak başka firma yok')
+      return
+    }
+
+    setSectorLoading(true)
+    try {
+      const results = await Promise.all(
+        peers.map(async (company): Promise<SectorEntry> => {
+          const ratioValues: Record<string, number | null> = {}
+          await Promise.all(
+            ratioActivePeriods.map(async period => {
+              try {
+                const res = await runAnalysis(company.id, period, ratioSelectedIds, [])
+                for (const rr of res.ratioResults) {
+                  ratioValues[`${rr.ruleId}|${period}`] = rr.error ? null : rr.value ?? null
+                }
+              } catch { /* firma bu dönem için veri içermiyor */ }
+            })
+          )
+          return { companyId: company.id, companyName: company.name, ratioValues }
+        })
+      )
+      setSectorEntries(results)
+      setSectorRatioId(ratioSelectedIds[0])
+      setSectorOpen(true)
+    } catch (e: unknown) { message.error(String(e)) }
+    finally { setSectorLoading(false) }
+  }
+
   // ── AI yorum handler ─────────────────────────────────────────────
   const handleAiInterpret = async () => {
     if (!selectedCompany || aiRatioPeriods.length === 0) {
@@ -660,11 +720,18 @@ export default function AnalysisPage() {
         </div>
       </div>
 
-      <Button type="primary" icon={<EyeOutlined />} loading={ratioLoading}
-        disabled={!selectedCompany || ratioSelectedPeriods.length === 0 || ratioSelectedIds.length === 0}
-        onClick={handleRatioView} style={{ marginBottom: 16 }}>
-        Görüntüle
-      </Button>
+      <Space style={{ marginBottom: 16 }}>
+        <Button type="primary" icon={<EyeOutlined />} loading={ratioLoading}
+          disabled={!selectedCompany || ratioSelectedPeriods.length === 0 || ratioSelectedIds.length === 0}
+          onClick={handleRatioView}>
+          Görüntüle
+        </Button>
+        <Button icon={<BarChartOutlined />} loading={sectorLoading}
+          disabled={!selectedCompany || ratioRows.length === 0}
+          onClick={handleSectorCompare}>
+          Sektör Karşılaştır
+        </Button>
+      </Space>
 
       {ratioError && <Alert type="error" message={ratioError} style={{ marginBottom: 12 }} />}
 
@@ -878,6 +945,29 @@ export default function AnalysisPage() {
     </Card>
   )
 
+  // ── sektör karşılaştırma modal ───────────────────────────────────
+  const currentSector = companies.find(c => c.id === selectedCompany)?.sector?.trim()
+  const selectedRatioRow = ratioRows.find(r => r.ratioId === sectorRatioId)
+
+  const sectorChartData = sectorEntries.map(entry => {
+    const row: Record<string, unknown> = {
+      name: entry.companyName.length > 22 ? entry.companyName.slice(0, 22) + '…' : entry.companyName,
+      fullName: entry.companyName,
+      isSelected: entry.companyId === selectedCompany,
+    }
+    for (const period of ratioActivePeriods) {
+      const v = entry.ratioValues[`${sectorRatioId}|${period}`]
+      row[period] = v != null ? Math.round(v * 10000) / 10000 : undefined
+    }
+    return row
+  })
+
+  const sectorHasData = sectorChartData.some(row =>
+    ratioActivePeriods.some(p => row[p] != null)
+  )
+
+  const barHeight = Math.max(240, sectorEntries.length * 44 + 60)
+
   return (
     <>
       <Title level={4} style={{ marginTop: 0 }}>Analiz</Title>
@@ -891,6 +981,108 @@ export default function AnalysisPage() {
           onChange={onCompanyChange}
         />
       </div>
+
+      <Modal
+        title={
+          <Space>
+            <BarChartOutlined style={{ color: '#1677ff' }} />
+            <span>Sektör Karşılaştırması</span>
+            {currentSector && <Tag color="blue">{currentSector}</Tag>}
+            <Text type="secondary" style={{ fontSize: 12, fontWeight: 400 }}>
+              {sectorEntries.length} firma
+            </Text>
+          </Space>
+        }
+        open={sectorOpen}
+        onCancel={() => setSectorOpen(false)}
+        footer={null}
+        width={860}
+      >
+        <Space wrap style={{ marginBottom: 16 }}>
+          <Select
+            style={{ width: 260 }}
+            value={sectorRatioId}
+            onChange={setSectorRatioId}
+            options={ratioRows.map(r => ({ value: r.ratioId, label: r.ratioName }))}
+            placeholder="Rasyo seçin"
+          />
+        </Space>
+
+        {selectedRatioRow && (
+          <div style={{ marginBottom: 12, fontSize: 12, color: '#8c8c8c' }}>
+            {renderFormulaTokens(selectedRatioRow.formula)}
+          </div>
+        )}
+
+        {!sectorHasData ? (
+          <Empty description="Seçili dönemler için bu rasyoya ait veri bulunamadı" />
+        ) : (
+          <>
+            <ResponsiveContainer width="100%" height={barHeight}>
+              <BarChart
+                layout="vertical"
+                data={sectorChartData}
+                margin={{ top: 4, right: 56, left: 12, bottom: 4 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                <XAxis
+                  type="number"
+                  tickFormatter={(v: number) => v.toFixed(2)}
+                  tick={{ fontSize: 11 }}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={170}
+                  tick={(props: { x: number; y: number; payload: { value: string } }) => {
+                    const entry = sectorEntries.find(e =>
+                      (e.companyName.length > 22 ? e.companyName.slice(0, 22) + '…' : e.companyName) === props.payload.value
+                    )
+                    const isCurrent = entry?.companyId === selectedCompany
+                    return (
+                      <text
+                        x={props.x} y={props.y} dy={4}
+                        textAnchor="end" fontSize={11}
+                        fontWeight={isCurrent ? 700 : 400}
+                        fill={isCurrent ? '#1677ff' : '#595959'}
+                      >
+                        {props.payload.value}
+                      </text>
+                    )
+                  }}
+                />
+                <ChartTooltip
+                  formatter={(value: number, name: string) => [value.toFixed(4), name]}
+                  labelFormatter={(label: string) => {
+                    const entry = sectorEntries.find(e =>
+                      (e.companyName.length > 22 ? e.companyName.slice(0, 22) + '…' : e.companyName) === label
+                    )
+                    return entry?.companyName ?? label
+                  }}
+                />
+                {ratioActivePeriods.length > 1 && <Legend verticalAlign="top" height={28} />}
+                {ratioActivePeriods.length === 1 ? (
+                  <Bar dataKey={ratioActivePeriods[0]} radius={[0, 4, 4, 0]} maxBarSize={28} label={{ position: 'right', fontSize: 11, formatter: (v: number) => v != null ? v.toFixed(2) : '' }}>
+                    {sectorChartData.map((entry, idx) => (
+                      <Cell key={idx} fill={(entry.isSelected as boolean) ? '#1677ff' : '#91caff'} />
+                    ))}
+                  </Bar>
+                ) : (
+                  ratioActivePeriods.map((period, i) => (
+                    <Bar key={period} dataKey={period} name={period}
+                      fill={PERIOD_COLORS[i % PERIOD_COLORS.length]}
+                      radius={[0, 3, 3, 0]} maxBarSize={18}
+                    />
+                  ))
+                )}
+              </BarChart>
+            </ResponsiveContainer>
+            <div style={{ marginTop: 8, fontSize: 11, color: '#8c8c8c' }}>
+              * Mavi / kalın etiket: seçili firma &nbsp;|&nbsp; Veri bulunmayan firma sütunları grafik dışındadır.
+            </div>
+          </>
+        )}
+      </Modal>
 
       <Tabs items={[
         { key: 'summary',    label: 'Özet Finansallar',        children: summaryTab },
